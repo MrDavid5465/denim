@@ -1,0 +1,30 @@
+@import "~office-ui-fabric-react/dist/sass/_References.scss";
+.App {
+  text-align: center;
+  background-color: #323130;
+  color: #fff;
+}
+
+.App-logo {
+  height: 20vh;
+  padding-top: 40vh;
+}
+
+.App-header {
+  min-height: 100vh;
+  background-color: #9fcf67;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #323130;
+
+  margin: 0;
+}
+
+.App-content {
+  margin: 0%;
+  width: 100%;
+}
+.App-link {
+  color: #09d3ac;
+}
