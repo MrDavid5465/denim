@@ -1,3 +1,0 @@
-[submodule "src/lib/typical-admin"]
-	path = src/lib/typical-admin
-	url = https://data-crush@dev.azure.com/data-crush/typical-admin/_git/typical-admin

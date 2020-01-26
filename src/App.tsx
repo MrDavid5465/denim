@@ -2,7 +2,6 @@ import React from "react";
 import Denim from "./components";
 
 import Admin from "./components/Admin";
-import ReactiveAdmin from "./components/ReactiveAdmin";
 
 //import Programs from "./components/Programs";
 import light from "./lib/light.json";
