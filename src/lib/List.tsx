@@ -12,7 +12,18 @@ import {
 import { IColumn, CheckboxVisibility } from "office-ui-fabric-react";
 import matchSorter from "match-sorter";
 import { CSVLink } from "react-csv";
-import { DisplaySchema } from "./typical-admin";
+export interface Row {
+  value: any;
+  values: any;
+}
+export interface DisplayField {
+  label: string;
+  onRender?: (row: Row) => any;
+  options: any;
+}
+export type DisplaySchema<T> = {
+  [key in keyof T]: DisplayField;
+};
 
 interface Props {
   items: Array<any>;
