@@ -4,7 +4,7 @@ import { IUser, ISettings } from "../../lib/queries";
 import Settings from "./Settings";
 import { INavLink, Icon, FontSizes, Stack } from "office-ui-fabric-react";
 import { useHistory } from "react-router";
-import { getCurrentApp } from "../../App";
+import { getCurrentApp } from "../";
 interface Props {
   my: Partial<IUser>;
   isOpen: boolean;

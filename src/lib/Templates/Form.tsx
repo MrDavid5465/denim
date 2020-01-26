@@ -1,13 +1,12 @@
 import React, { useEffect, forwardRef, ReactElement, Ref } from "react";
 
 import Raw from "./Fabric";
-import FormWrapper from "../per-form/src/components/FormWrapper";
-import { useForm } from "../per-form/src/components/Form/useForm";
-import {
+import useForm, {
+  FormWrapper,
   SchemaDefinition,
   IForm,
   IConverters
-} from "../per-form/src/components/Form/types";
+} from "@octant/per-form";
 
 interface Props<T> {
   converters?: IConverters;

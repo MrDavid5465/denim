@@ -2,7 +2,7 @@ export { default as useWindowDimensions } from "../../../lib/useWindowDimensions
 
 export { HeaderLink } from "./HeaderLink";
 
-export { setTheme } from "../../../App";
+export { setTheme } from "../../index";
 export {
   Stack,
   Link,

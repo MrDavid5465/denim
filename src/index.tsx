@@ -13,7 +13,6 @@ import { ApolloProvider } from "@apollo/react-components";
 import { ApolloClient } from "apollo-client";
 import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import MyAppProvider from "./components/Contexts/MyAppProvider";
 
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -35,11 +34,9 @@ export const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <MyAppProvider>
-      <Router>
-        <App />
-      </Router>
-    </MyAppProvider>
+    <Router>
+      <App />
+    </Router>
   </ApolloProvider>,
   document.getElementById("root")
 );

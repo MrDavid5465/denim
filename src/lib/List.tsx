@@ -4,6 +4,7 @@ import {
   getStyle,
   Stack,
   IndexableObject,
+  IconButton,
   Icon,
   DetailsList,
   SelectionMode
@@ -11,7 +12,7 @@ import {
 import { IColumn, CheckboxVisibility } from "office-ui-fabric-react";
 import matchSorter from "match-sorter";
 import { CSVLink } from "react-csv";
-import { DisplaySchema } from "./reactive-admin/lib";
+import { DisplaySchema } from "./typical-admin";
 
 interface Props {
   items: Array<any>;
@@ -19,6 +20,7 @@ interface Props {
   onSelect?: (values: any) => void;
   name: string;
   csvHeaders?: Array<{ label: string; key: string }>;
+  pageSize?: number;
 }
 
 export const List: React.FC<Props> = ({
@@ -26,7 +28,8 @@ export const List: React.FC<Props> = ({
   schema,
   onSelect,
   name,
-  csvHeaders
+  csvHeaders,
+  pageSize
 }) => {
   const [filters, setFilters] = useState<IndexableObject>({
     name: "",
@@ -37,15 +40,12 @@ export const List: React.FC<Props> = ({
   const [sort, setSort] = useState<IndexableObject>({});
   var filteredItems = items;
   const style = getStyle();
-
-  function handleSelect(
-    item?: any,
-    index?: number | undefined,
-    ev?: React.FocusEvent<HTMLElement> | undefined
-  ) {
-    onSelect && onSelect((index !== undefined && filteredItems[index]) || item);
+  const [page, setPage] = useState(0);
+  function handleSelect(item?: any) {
+    onSelect && onSelect(item);
   }
   function handleChange(name: string, value: any) {
+    setPage(0);
     setFilters({ ...filters, [name]: value });
   }
   function handleSort(
@@ -89,9 +89,9 @@ export const List: React.FC<Props> = ({
     <>
       <Stack horizontal tokens={{ childrenGap: 10 }}>
         {Object.entries(schema)
-          .filter(([k, s]: any) => s.filterable)
+          .filter(([k, s]: any) => s.options && s.options.filterable)
           .map(([k, v]: any, i: number) =>
-            v.options ? (
+            v.options.options ? (
               <Field
                 key={i}
                 className={style.sm}
@@ -101,7 +101,7 @@ export const List: React.FC<Props> = ({
                 onChange={handleChange}
                 name={k}
                 value={filters[k]}
-                options={v.options.map((p: any) => ({
+                options={v.options.options.map((p: any) => ({
                   text: p.text || "",
                   value: p.value || ""
                 }))}
@@ -134,9 +134,14 @@ export const List: React.FC<Props> = ({
             </CSVLink>
           </Stack>
         )}
+
         <DetailsList
           onActiveItemChanged={handleSelect}
-          items={filteredItems}
+          items={
+            pageSize
+              ? filteredItems.slice(page * pageSize, (page + 1) * pageSize)
+              : filteredItems
+          }
           checkboxVisibility={CheckboxVisibility.hidden}
           selectionMode={
             !handleSelect ? SelectionMode.none : SelectionMode.single
@@ -159,6 +164,23 @@ export const List: React.FC<Props> = ({
             return col;
           })}
         />
+        {pageSize && (
+          <Stack horizontal horizontalAlign={"end"} verticalAlign={"center"}>
+            <IconButton disabled={page === 0} onClick={() => setPage(page - 1)}>
+              <Icon iconName={"Remove"} />
+            </IconButton>
+            <IconButton
+              disabled={filteredItems.length - page * pageSize < pageSize}
+              onClick={() => setPage(page + 1)}
+            >
+              <Icon iconName={"Add"} />
+            </IconButton>
+            Page {page + 1} of{" "}
+            {filteredItems.length % pageSize
+              ? Math.floor(filteredItems.length / pageSize) + 1
+              : Math.floor(filteredItems.length / pageSize)}
+          </Stack>
+        )}
       </Stack>
     </>
   );

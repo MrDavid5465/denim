@@ -1,13 +1,11 @@
 import React from "react";
-import ReactiveAdmin from "../../lib/reactive-admin";
+import ReactiveAdmin, { DisplaySchema } from "./lib";
 
 import Update from "./Update";
 import List from "./List";
 import Create from "./Create";
 import Show from "./Show";
-import { DisplaySchema } from "../../lib/reactive-admin/lib";
-import { SchemaDefinition } from "../../lib/per-form/src/templates/lib";
-import { getCurrentApp } from "../../App";
+import { SchemaDefinition } from "@octant/per-form";
 
 interface Props {
   dispatcher: { list: any; create: any; get: any; update: any; remove: any };
@@ -20,13 +18,16 @@ interface Props {
     review: DisplaySchema<any>;
     update: SchemaDefinition<any>;
   };
+  app?: string;
 }
 
 const Index: React.FC<Props> = ({
   dispatcher,
   match,
   name,
-  schemaDefinition
+  schemaDefinition,
+  components,
+  app
 }) => {
   return (
     <ReactiveAdmin
@@ -35,9 +36,10 @@ const Index: React.FC<Props> = ({
       name={name}
       components={{
         list: List,
-        create: (props: any) => <Create {...props} app={getCurrentApp()} />,
+        create: (props: any) => <Create {...props} app={app} />,
         review: Show,
-        update: (props: any) => <Update {...props} app={getCurrentApp()} />
+        update: (props: any) => <Update {...props} app={app} />,
+        ...components
       }}
       schemaDefinition={schemaDefinition}
     />

@@ -369,14 +369,14 @@ const style = (theme: ITheme) =>
     },
     appLogo: {
       height: "20vh",
-      paddingTop: "40vh"
+      paddingTop: "40vh",
+      fill: theme.palette.white
     },
     appHeader: {
       minHeight: "100vh",
       backgroundColor: theme.palette.themePrimary,
       alignItems: "center",
       justifyContent: "center",
-      fontSize: "calc(10px + 2vmin)",
       color: theme.palette.themeDarker,
       margin: 0
     }

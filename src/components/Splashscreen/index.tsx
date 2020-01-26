@@ -10,12 +10,7 @@ const Index: React.FC<Props> = ({ Icon }) => {
   return (
     <div className={style.app}>
       <header className={style.appHeader}>
-        <Icon
-          className={style.appLogo}
-          style={{
-            fill: "#fff"
-          }}
-        />
+        <Icon className={style.appLogo} />
       </header>
     </div>
   );

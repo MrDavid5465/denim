@@ -13,8 +13,7 @@ export const applicationSchema = {
 
   defaultRoute: {
     type: "text",
-    label: "Default Route",
-    required: true
+    label: "Default Route"
   },
 
   frontEnd: {

@@ -36,7 +36,6 @@ export {
 export { useConstCallback } from "@uifabric/react-hooks";
 export { Link, Route, Switch, Redirect, NavLink } from "react-router-dom";
 export { useQuery, useMutation } from "@apollo/react-hooks";
-export { Query } from "@apollo/react-components";
 export { useForm } from "./useForm";
 export { useSchema } from "./useSchema";
 export { useValidator } from "./useValidator";
@@ -45,7 +44,7 @@ export { format } from "date-fns";
 export { default as Form } from "./Templates/Form";
 export { List } from "./List";
 
-export { getStyle } from "../App";
+export { getStyle } from "../components";
 
 export interface IndexableObject {
   [key: string]: any;

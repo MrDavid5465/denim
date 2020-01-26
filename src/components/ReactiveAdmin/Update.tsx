@@ -10,7 +10,7 @@ import {
 import { useMutation, useQuery } from "./lib";
 
 import Links from "./Links";
-import { getCurrentApp } from "../../App";
+import { getCurrentApp } from "../";
 
 interface Props {
   dispatcher: any;
@@ -39,12 +39,7 @@ const Update: React.FC<Props> = ({
   const initialValues = !loading && !error && data[queryName];
 
   const [updateItem] = useMutation(dispatcher.update, {
-    onCompleted: data =>
-      history.push(
-        `/${getCurrentApp()}/${name.plural.toLowerCase()}/${
-          data[`add${name.singular}`].id
-        }/show`
-      ),
+    onCompleted: data => history.push(match.url.replace("edit", "show")),
     refetchQueries: [
       { query: dispatcher.get, variables: { id } },
       { query: dispatcher.list }

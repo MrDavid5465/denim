@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { withConditionalRender } from "../per-form/src/lib";
+import { withConditionalRender } from "@octant/per-form";
 import {
   Stack,
   Checkbox,
