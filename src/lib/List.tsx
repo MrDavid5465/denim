@@ -19,7 +19,7 @@ export interface Row {
 export interface DisplayField {
   label: string;
   onRender?: (row: Row) => any;
-  options: any;
+  options?: any;
 }
 export type DisplaySchema<T> = {
   [key in keyof T]: DisplayField;
