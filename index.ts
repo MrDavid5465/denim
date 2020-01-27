@@ -6,5 +6,6 @@ export { default as light } from "./src/lib/light.json";
 export { default as dark } from "./src/lib/dark.json";
 export { default as Admin } from "./src/components/Admin";
 export { default as Logo } from "./src/logo";
+export { List } from "./src/lib/List";
 
 export default Denim;
