@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Modal, Toggle, useMutation, Stack, getStyle } from "../lib";
+import React from "react";
+import { Modal, useMutation, Stack, getStyle } from "../lib";
 import { userSettings } from "./schema";
 import dispatcher, { ISettings } from "../../../lib/queries";
-import { Dropdown, Form } from "../../../lib";
-import { IDropdownOption } from "office-ui-fabric-react";
+import { Form } from "../../../lib";
 
 interface Props {
   isOpen: boolean;
@@ -22,21 +21,6 @@ const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
       refetchQueries: ["my"]
     });
   }
-  // function handleChange(
-  //   ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-  //   newValue?: string
-  // ) {
-  //   setForm({ ...form, [ev.currentTarget.name]: newValue });
-  // }
-  // function handleSelect(ev: any, option?: IDropdownOption | undefined) {
-  //   setForm({ ...form, [ev.currentTarget.name]: option?.key });
-  // }
-  // function toggleDark(
-  //   ev: React.MouseEvent<HTMLElement>,
-  //   checked: boolean | undefined
-  // ) {
-  //   setForm({ ...form, theme: checked ? "dark" : "light" });
-  // }
   return (
     <Modal isOpen={isOpen} onDismiss={dismissModal} titleAriaId={"title"}>
       <Stack className={style.modalHeader}>

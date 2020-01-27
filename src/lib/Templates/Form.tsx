@@ -1,6 +1,6 @@
 import React, { useEffect, forwardRef, ReactElement, Ref } from "react";
 
-import Raw from "./Fabric";
+import Field from "./Fabric";
 import useForm, {
   FormWrapper,
   SchemaDefinition,
@@ -64,7 +64,7 @@ function SubForm<T>(
       onChange={change}
       onFocus={focus}
       schema={schema}
-      Template={Raw}
+      Template={Field}
       touched={touched}
       values={values}
     />

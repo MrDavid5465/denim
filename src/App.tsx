@@ -4,8 +4,8 @@ import Denim from "./components";
 import Admin from "./components/Admin";
 
 //import Programs from "./components/Programs";
-import light from "./lib/light.json";
-import dark from "./lib/dark.json";
+import light from "./lib/light";
+import dark from "./lib/dark";
 
 const App: React.FC = () => {
   return (
