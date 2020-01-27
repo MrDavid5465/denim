@@ -35,7 +35,7 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
     setTheme("default", themes);
-    return <Splashscreen Icon={IconSVG} />;
+    return <Splashscreen Icon={Logo} />;
   }
   setTheme(
     `${data && data.my && data.my.settings && data.my.settings.theme}`,
@@ -50,7 +50,7 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
       <Route
         exact
         path={"/"}
-        render={props => <Header my={data && data.my} />}
+        render={props => <Header my={data && data.my} Logo={Logo} />}
       />
       <Route
         path={"/:render"}
@@ -59,7 +59,7 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
             props.match.params.render === "kiosk" ? (
             <></>
           ) : (
-            <Header my={data && data.my} />
+            <Header my={data && data.my} Logo={Logo} />
           );
         }}
       />

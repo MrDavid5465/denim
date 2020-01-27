@@ -9,7 +9,7 @@ import {
   Route,
   getStyle
 } from "./lib";
-import IconSVG from "../../logo";
+import { IconProps } from "../../logo";
 import { useConstCallback } from "@uifabric/react-hooks";
 import { AppNavBar } from "./AppNavBar";
 import { NavBar } from "./NavBar";
@@ -17,9 +17,10 @@ import { IApplication } from "../../lib/queries";
 
 interface Props {
   my: any;
+  Logo: React.FC<IconProps>;
 }
 
-export const Header: React.FC<Props> = ({ my }) => {
+export const Header: React.FC<Props> = ({ my, Logo }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
@@ -59,7 +60,7 @@ export const Header: React.FC<Props> = ({ my }) => {
               />
             </IconButton>
           </Stack.Item>
-          <IconSVG
+          <Logo
             style={{
               fill: theme.palette.themeLighter,
               height: 35,
