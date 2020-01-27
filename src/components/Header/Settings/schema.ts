@@ -1,4 +1,4 @@
-export const userSettings = {
+export const userSettings = (themes: any) => ({
   serviceDeskKey: {
     type: "text",
     label: "Service Desk Key",
@@ -10,9 +10,8 @@ export const userSettings = {
     required: false
   },
   theme: {
-    type: "toggle",
+    type: "select",
     label: "Theme",
-    onLabel: "Dark",
-    offLabel: "Light"
+    options: Object.keys(themes).map(k => ({ key: k, text: k, value: k }))
   }
-};
+});

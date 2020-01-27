@@ -50,7 +50,9 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
       <Route
         exact
         path={"/"}
-        render={props => <Header my={data && data.my} Logo={Logo} />}
+        render={props => (
+          <Header my={data && data.my} Logo={Logo} themes={themes} />
+        )}
       />
       <Route
         path={"/:render"}
@@ -59,7 +61,7 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
             props.match.params.render === "kiosk" ? (
             <></>
           ) : (
-            <Header my={data && data.my} Logo={Logo} />
+            <Header my={data && data.my} Logo={Logo} themes={themes} />
           );
         }}
       />

@@ -18,9 +18,10 @@ import { IApplication } from "../../lib/queries";
 interface Props {
   my: any;
   Logo: React.FC<IconProps>;
+  themes: any;
 }
 
-export const Header: React.FC<Props> = ({ my, Logo }) => {
+export const Header: React.FC<Props> = ({ my, Logo, themes }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
@@ -93,7 +94,12 @@ export const Header: React.FC<Props> = ({ my, Logo }) => {
               ))}
           </Switch>
         </Stack>
-        <AppNavBar isOpen={isOpen} dismissPanel={dismissPanel} my={my} />
+        <AppNavBar
+          isOpen={isOpen}
+          dismissPanel={dismissPanel}
+          my={my}
+          themes={themes}
+        />
         <NavBar my={my} />
       </Stack>
     </div>

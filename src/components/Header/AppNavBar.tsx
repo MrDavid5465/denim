@@ -9,9 +9,15 @@ interface Props {
   my: Partial<IUser>;
   isOpen: boolean;
   dismissPanel: () => any;
+  themes: any;
 }
 
-export const AppNavBar: React.FC<Props> = ({ my, isOpen, dismissPanel }) => {
+export const AppNavBar: React.FC<Props> = ({
+  my,
+  isOpen,
+  dismissPanel,
+  themes
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const history = useHistory();
   const openGroup = getCurrentApp();
@@ -73,6 +79,7 @@ export const AppNavBar: React.FC<Props> = ({ my, isOpen, dismissPanel }) => {
             isOpen={modalOpen}
             dismissModal={dismissModal}
             settings={settings}
+            themes={themes}
           />
         </>
       )}
