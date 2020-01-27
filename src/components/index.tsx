@@ -17,7 +17,7 @@ import stylesJson from "../lib/getStyle";
 import { useQuery } from "@apollo/react-hooks";
 import { IMy } from "../lib/queries";
 import dispatcher from "../lib/queries";
-import IconSVG from "../logo";
+import IconSVG, { IconProps } from "../logo";
 
 export const setTheme = (themeString: string, themes: any) => {
   loadTheme(themes[themeString || "default"] || themes["default"]);
@@ -29,8 +29,9 @@ export const getStyle = () => mergeStyleSets(stylesJson(getTheme()));
 interface Props {
   components?: any;
   themes: any;
+  Logo?: React.FC<IconProps>;
 }
-const App: React.FC<Props> = ({ components = {}, themes }) => {
+const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
     setTheme("default", themes);
