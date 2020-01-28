@@ -28,10 +28,16 @@ export const getCurrentApp = () => {
 export const getStyle = () => mergeStyleSets(stylesJson(getTheme()));
 interface Props {
   components?: any;
+  RootComponent?: any;
   themes: any;
   Logo?: React.FC<IconProps>;
 }
-const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
+const App: React.FC<Props> = ({
+  components = {},
+  themes,
+  Logo = IconSVG,
+  RootComponent
+}) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
     setTheme("default", themes);
@@ -67,6 +73,26 @@ const App: React.FC<Props> = ({ components = {}, themes, Logo = IconSVG }) => {
       />
 
       <Switch>
+        <Route
+          path={"/"}
+          exact
+          render={props => (
+            <Stack className={style.content}>
+              {RootComponent ? (
+                <RootComponent {...props} />
+              ) : data &&
+                data.my &&
+                data.my.settings &&
+                data.my.settings.launchPage ? (
+                <Redirect to={`/${data.my.settings.launchPage}`} />
+              ) : (
+                <Stack>
+                  <h1>Welcome, Click the waffle icon to begin!</h1>
+                </Stack>
+              )}
+            </Stack>
+          )}
+        />
         {data &&
           data.my &&
           data.my.applications &&

@@ -48,20 +48,22 @@ const style = (theme: ITheme) =>
   ({
     content: {
       paddingTop: 50,
+      paddingRight: "5vw",
+      paddingLeft: "5vw",
       width: "100%",
       marginRight: "auto",
-      marginLeft: "auto",
-      selectors: {
-        "@media (min-width: 639px)": {
-          maxWidth: 639
-        },
-        "@media (min-width: 1023px)": {
-          maxWidth: 1023
-        },
-        "@media (min-width: 1365px)": {
-          maxWidth: 1365
-        }
-      }
+      marginLeft: "auto"
+      // selectors: {
+      //   "@media (min-width: 639px)": {
+      //     maxWidth: 639
+      //   },
+      //   "@media (min-width: 1023px)": {
+      //     maxWidth: 1023
+      //   },
+      //   "@media (min-width: 1365px)": {
+      //     maxWidth: 1365
+      //   }
+      // }
     },
     sm: {
       width: "100%",

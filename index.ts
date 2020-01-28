@@ -7,5 +7,6 @@ export { getCurrentApp, getStyle } from "./src/components";
 export { default as Admin } from "./src/components/Admin";
 export { default as Logo } from "./src/logo";
 export { List } from "./src/lib/List";
+export { HeaderLink } from "./src/components/Header/lib/HeaderLink";
 
 export default Denim;
