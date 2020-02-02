@@ -9,7 +9,6 @@ import {
   Route,
   getStyle
 } from "./lib";
-import { IconProps } from "../../logo";
 import { useConstCallback } from "@uifabric/react-hooks";
 import { AppNavBar } from "./AppNavBar";
 import { NavBar } from "./NavBar";
@@ -17,11 +16,11 @@ import { IApplication } from "../../lib/queries";
 
 interface Props {
   my: any;
-  Logo: React.FC<IconProps>;
+  Brand?: React.FC<any>;
   themes: any;
 }
 
-export const Header: React.FC<Props> = ({ my, Logo, themes }) => {
+export const Header: React.FC<Props> = ({ my, Brand, themes }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
@@ -61,15 +60,17 @@ export const Header: React.FC<Props> = ({ my, Logo, themes }) => {
               />
             </IconButton>
           </Stack.Item>
-          <Logo
-            style={{
-              fill: theme.palette.themeLighter,
-              height: 35,
-              minHeight: 35,
-              maxHeight: 35,
-              width: 35
-            }}
-          />
+          {Brand && (
+            <Brand
+              style={{
+                fill: theme.palette.themeLighter,
+                height: 35,
+                minHeight: 35,
+                maxHeight: 35,
+                width: 35
+              }}
+            />
+          )}
           <Switch>
             <Route
               path={`/`}

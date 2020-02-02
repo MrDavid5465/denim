@@ -4,6 +4,8 @@ export { default as light } from "./src/lib/light";
 export { default as dark } from "./src/lib/dark";
 
 export { getCurrentApp, getStyle } from "./src/components";
+export { default as styles } from "./src/lib/getStyle";
+
 export { default as Admin } from "./src/components/Admin";
 export { default as Logo } from "./src/logo";
 export { List } from "./src/lib/List";
