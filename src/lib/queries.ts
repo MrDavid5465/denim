@@ -147,6 +147,21 @@ const UPDATE_MY_USER_SETTINGS = gql`
     }
   }
 `;
+const GET_TYPIQL_CLIENT = gql`
+  query getTypiQLClient {
+    getTypiQLClient {
+      ip
+      computerName
+    }
+  }
+`;
+export interface IGetTypiQLClient {
+  getTypiQLClient: Partial<ITypiQLClient>;
+}
+export interface ITypiQLClient {
+  ip: string;
+  computerName: string;
+}
 export interface IUserSettingInput {
   sAMAccountName: String;
   serviceDeskKey: String;
@@ -216,7 +231,8 @@ const dispatcher = {
   addApplication: ADD_APPLICATION,
   updateApplication: UPDATE_APPLICATION,
   getFile: GET_FILE,
-  upload: UPLOAD
+  upload: UPLOAD,
+  getTypiQLClient: GET_TYPIQL_CLIENT
 };
 
 export default dispatcher;
