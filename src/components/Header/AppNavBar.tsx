@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Panel, PanelType, Nav, DefaultButton, FLink } from "./lib";
+import { Panel, PanelType, Nav, DefaultButton } from "./lib";
 import { IUser, ISettings } from "../../lib/queries";
 import Settings from "./Settings";
-import { INavLink, Icon, FontSizes, Stack } from "office-ui-fabric-react";
+import { INavLink } from "office-ui-fabric-react";
 import { useHistory } from "react-router";
 import { getCurrentApp } from "../";
 interface Props {
@@ -10,13 +10,15 @@ interface Props {
   isOpen: boolean;
   dismissPanel: () => any;
   themes: any;
+  ExternalApps?: React.FC<any>;
 }
 
 export const AppNavBar: React.FC<Props> = ({
   my,
   isOpen,
   dismissPanel,
-  themes
+  themes,
+  ExternalApps
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const history = useHistory();
@@ -84,19 +86,7 @@ export const AppNavBar: React.FC<Props> = ({
         </>
       )}
     >
-      <FLink href={`http://intranet`}>
-        <Stack horizontal verticalAlign={"center"}>
-          <Icon
-            style={{
-              fontSize: "3em",
-              textDecoration: "none",
-              paddingRight: 10
-            }}
-            iconName={"SharepointLogo"}
-          />
-          <span style={{ fontSize: FontSizes.large }}>Sharepoint</span>
-        </Stack>
-      </FLink>
+      {ExternalApps && <ExternalApps />}
 
       <h2>Applications</h2>
       <Nav

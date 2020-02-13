@@ -19,9 +19,16 @@ interface Props {
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
   themes: any;
+  ExternalApps?: React.FC<any>;
 }
 
-export const Header: React.FC<Props> = ({ my, Brand, themes, Controls }) => {
+export const Header: React.FC<Props> = ({
+  my,
+  Brand,
+  themes,
+  Controls,
+  ExternalApps
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
@@ -101,6 +108,7 @@ export const Header: React.FC<Props> = ({ my, Brand, themes, Controls }) => {
           dismissPanel={dismissPanel}
           my={my}
           themes={themes}
+          ExternalApps={ExternalApps}
         />
         <NavBar my={my} Controls={Controls} />
       </Stack>

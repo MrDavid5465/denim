@@ -33,6 +33,7 @@ interface Props {
   Logo?: React.FC<IconProps>;
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
+  ExternalApps?: React.FC<any>;
 }
 const App: React.FC<Props> = ({
   components = {},
@@ -40,7 +41,8 @@ const App: React.FC<Props> = ({
   Logo = IconSVG,
   Brand,
   RootComponent,
-  Controls
+  Controls,
+  ExternalApps
 }) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
@@ -65,6 +67,7 @@ const App: React.FC<Props> = ({
             my={data && data.my}
             Brand={Brand}
             Controls={Controls}
+            ExternalApps={ExternalApps}
             themes={themes}
           />
         )}
@@ -80,6 +83,7 @@ const App: React.FC<Props> = ({
               my={data && data.my}
               Brand={Brand}
               Controls={Controls}
+              ExternalApps={ExternalApps}
               themes={themes}
             />
           );
