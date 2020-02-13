@@ -20,9 +20,10 @@ import { INavLink } from "office-ui-fabric-react";
 interface Props {
   my: Partial<IUser>;
   Controls?: React.FC<any>;
+  className: string;
 }
 
-export const NavBar: React.FC<Props> = ({ my, Controls }) => {
+export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
   const history = useHistory();
   const theme = getTheme();
   const style = getStyle();
@@ -52,7 +53,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls }) => {
     }));
 
   return (
-    <>
+    <Stack className={className}>
       <Stack horizontal horizontalAlign={"end"}>
         <Switch>
           {apps &&
@@ -142,6 +143,6 @@ export const NavBar: React.FC<Props> = ({ my, Controls }) => {
           </Switch>
         </Panel>
       </Stack>
-    </>
+    </Stack>
   );
 };

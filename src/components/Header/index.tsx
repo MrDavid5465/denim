@@ -110,7 +110,7 @@ export const Header: React.FC<Props> = ({
           themes={themes}
           ExternalApps={ExternalApps}
         />
-        <NavBar my={my} Controls={Controls} />
+        <NavBar my={my} Controls={Controls} className={style.navBar} />
       </Stack>
     </div>
   );

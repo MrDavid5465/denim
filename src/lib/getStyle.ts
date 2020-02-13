@@ -42,6 +42,7 @@ export interface Style {
   app: IStyle;
   appLogo: IStyle;
   appHeader: IStyle;
+  navBar: IStyle;
 }
 
 const style = (theme: ITheme) =>
@@ -381,6 +382,10 @@ const style = (theme: ITheme) =>
       justifyContent: "center",
       color: theme.palette.themeDarker,
       margin: 0
+    },
+    navBar: {
+      position: "fixed",
+      right: 0
     }
   } as Style);
 
