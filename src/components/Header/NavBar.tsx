@@ -53,43 +53,45 @@ export const NavBar: React.FC<Props> = ({ my, Controls }) => {
 
   return (
     <>
-      <Switch>
-        {apps &&
-          apps.map(app => {
-            return (
-              <Route
-                key={app.path}
-                path={`/${app.path}`}
-                render={props => (
-                  <Stack
-                    className={style.hiddenLgDown}
-                    verticalAlign={"center"}
-                    style={{ paddingRight: 12 }}
-                    horizontal
-                    tokens={{ childrenGap: 10 }}
-                  >
-                    {app.links &&
-                      app.links.map(l => {
-                        return (
-                          <HeaderLink
-                            key={l.path}
-                            to={`/${app.path}/${l.path}`}
-                            active={props.location.pathname.startsWith(
-                              `/${app.path}/${l.path}`
-                            )}
-                            {...props}
-                          >
-                            {l.text}
-                          </HeaderLink>
-                        );
-                      })}
-                  </Stack>
-                )}
-              />
-            );
-          })}
-      </Switch>
-      {Controls && <Controls />}
+      <Stack horizontal horizontalAlign={"end"}>
+        <Switch>
+          {apps &&
+            apps.map(app => {
+              return (
+                <Route
+                  key={app.path}
+                  path={`/${app.path}`}
+                  render={props => (
+                    <Stack
+                      className={style.hiddenLgDown}
+                      verticalAlign={"center"}
+                      style={{ paddingRight: 12 }}
+                      horizontal
+                      tokens={{ childrenGap: 10 }}
+                    >
+                      {app.links &&
+                        app.links.map(l => {
+                          return (
+                            <HeaderLink
+                              key={l.path}
+                              to={`/${app.path}/${l.path}`}
+                              active={props.location.pathname.startsWith(
+                                `/${app.path}/${l.path}`
+                              )}
+                              {...props}
+                            >
+                              {l.text}
+                            </HeaderLink>
+                          );
+                        })}
+                    </Stack>
+                  )}
+                />
+              );
+            })}
+        </Switch>
+        {Controls && <Controls />}
+      </Stack>
       <Stack
         horizontal
         style={{ position: "absolute", top: 0, right: 0 }}
