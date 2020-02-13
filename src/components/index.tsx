@@ -32,13 +32,15 @@ interface Props {
   themes: any;
   Logo?: React.FC<IconProps>;
   Brand?: React.FC<any>;
+  Controls?: React.FC<any>;
 }
 const App: React.FC<Props> = ({
   components = {},
   themes,
   Logo = IconSVG,
   Brand,
-  RootComponent
+  RootComponent,
+  Controls
 }) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
@@ -59,7 +61,12 @@ const App: React.FC<Props> = ({
         exact
         path={"/"}
         render={props => (
-          <Header my={data && data.my} Brand={Brand} themes={themes} />
+          <Header
+            my={data && data.my}
+            Brand={Brand}
+            Controls={Controls}
+            themes={themes}
+          />
         )}
       />
       <Route
@@ -69,7 +76,12 @@ const App: React.FC<Props> = ({
             props.match.params.render === "kiosk" ? (
             <></>
           ) : (
-            <Header my={data && data.my} Brand={Brand} themes={themes} />
+            <Header
+              my={data && data.my}
+              Brand={Brand}
+              Controls={Controls}
+              themes={themes}
+            />
           );
         }}
       />

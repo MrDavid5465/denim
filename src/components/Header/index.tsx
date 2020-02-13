@@ -17,10 +17,11 @@ import { IApplication } from "../../lib/queries";
 interface Props {
   my: any;
   Brand?: React.FC<any>;
+  Controls?: React.FC<any>;
   themes: any;
 }
 
-export const Header: React.FC<Props> = ({ my, Brand, themes }) => {
+export const Header: React.FC<Props> = ({ my, Brand, themes, Controls }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
@@ -101,7 +102,7 @@ export const Header: React.FC<Props> = ({ my, Brand, themes }) => {
           my={my}
           themes={themes}
         />
-        <NavBar my={my} />
+        <NavBar my={my} Controls={Controls} />
       </Stack>
     </div>
   );

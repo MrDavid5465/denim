@@ -19,9 +19,10 @@ import { INavLink } from "office-ui-fabric-react";
 
 interface Props {
   my: Partial<IUser>;
+  Controls?: React.FC<any>;
 }
 
-export const NavBar: React.FC<Props> = ({ my }) => {
+export const NavBar: React.FC<Props> = ({ my, Controls }) => {
   const history = useHistory();
   const theme = getTheme();
   const style = getStyle();
@@ -88,6 +89,7 @@ export const NavBar: React.FC<Props> = ({ my }) => {
             );
           })}
       </Switch>
+      {Controls && <Controls />}
       <Stack
         horizontal
         style={{ position: "absolute", top: 0, right: 0 }}
@@ -109,6 +111,7 @@ export const NavBar: React.FC<Props> = ({ my }) => {
           customWidth={"272px"}
           type={PanelType.custom}
         >
+          {Controls && <Controls />}
           <Switch>
             {apps &&
               apps.map(app => (
