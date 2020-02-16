@@ -48,7 +48,8 @@ export interface Style {
 const style = (theme: ITheme) =>
   ({
     content: {
-      paddingTop: 50,
+      position: "fixed",
+      top: 50,
       paddingRight: "5vw",
       paddingLeft: "5vw",
       width: "100%",
