@@ -181,7 +181,7 @@ export const List: React.FC<Props> = ({
               <Icon iconName={"Remove"} />
             </IconButton>
             <IconButton
-              disabled={filteredItems.length - page * pageSize < pageSize}
+              disabled={filteredItems.length - page * pageSize <= pageSize}
               onClick={() => setPage(page + 1)}
             >
               <Icon iconName={"Add"} />
