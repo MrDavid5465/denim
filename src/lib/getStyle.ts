@@ -386,7 +386,8 @@ const style = (theme: ITheme) =>
     },
     navBar: {
       position: "fixed",
-      right: 0
+      right: 0,
+      top: 0
     }
   } as Style);
 
