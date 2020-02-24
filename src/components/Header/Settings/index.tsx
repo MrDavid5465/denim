@@ -25,7 +25,6 @@ const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
         refetchQueries: ["my"]
       });
   }
-  console.log(settings);
   return (
     <Modal isOpen={isOpen} onDismiss={dismissModal} titleAriaId={"title"}>
       <Stack className={style.modalHeader}>
