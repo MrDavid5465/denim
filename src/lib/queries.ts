@@ -142,7 +142,6 @@ const UPDATE_MY_USER_SETTINGS = gql`
     updateMyUserSettings(settings: $settings) {
       id
       sAMAccountName
-      serviceDeskKey
       launchPage
       theme
       fontSize
@@ -166,14 +165,12 @@ export interface ITypiQLClient {
 }
 export interface IUserSettingInput {
   sAMAccountName: String;
-  serviceDeskKey: String;
   launchPage: String;
   theme: String;
 }
 export interface ISettings {
   id: string;
   sAMAccountName: string;
-  serviceDeskKey: string;
   launchPage: string;
   theme: string;
   fontSize: number;

@@ -1,11 +1,6 @@
 import { IForm } from "@octant/per-form";
 
 export const userSettings = (themes: any) => ({
-  serviceDeskKey: {
-    type: "text",
-    label: "Service Desk Key",
-    required: false
-  },
   launchPage: {
     type: "text",
     label: "Launch Page",
