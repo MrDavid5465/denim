@@ -17,7 +17,6 @@ export {
   DefaultButton,
   mergeStyleSets,
   mergeStyles,
-  FontSizes,
   FontWeights,
   Checkbox,
   Pivot,

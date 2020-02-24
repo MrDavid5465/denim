@@ -102,7 +102,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
           <Icon
             iconName={"GlobalNavButton"}
             style={{
-              fontSize: theme.fonts.xLargePlus.fontSize,
+              fontSize: "1.7em",
               color: theme.semanticColors.primaryButtonText
             }}
           />

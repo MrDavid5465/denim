@@ -8,7 +8,7 @@ interface Props {
 const Index: React.FC<Props> = ({ Icon }) => {
   const style = getStyle();
   return (
-    <div className={style.app}>
+    <div className={style.splashScreen}>
       <header className={style.appHeader}>
         <Icon className={style.appLogo} />
       </header>

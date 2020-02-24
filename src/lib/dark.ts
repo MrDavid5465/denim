@@ -1,4 +1,4 @@
-export default {
+export default (fontSize: number = 1) => ({
   palette: {
     themePrimary: "#0095ff",
     themeLighterAlt: "#00060a",
@@ -23,5 +23,27 @@ export default {
     black: "#f8f8f8",
     white: "#444444"
   },
-  isInverted: true
-};
+  isInverted: true,
+  fonts: {
+    tiny: { fontSize: Math.round(10 * fontSize) },
+    xSmall: { fontSize: Math.round(10 * fontSize) },
+    small: { fontSize: Math.round(12 * fontSize) },
+    smallPlus: { fontSize: Math.round(12 * fontSize) },
+    medium: { fontSize: Math.round(14 * fontSize) },
+    mediumPlus: { fontSize: Math.round(16 * fontSize) },
+    large: { fontSize: Math.round(18 * fontSize) },
+    xLarge: { fontSize: Math.round(20 * fontSize) },
+    xLargePlus: { fontSize: Math.round(24 * fontSize) },
+    xxLarge: { fontSize: Math.round(28 * fontSize) },
+    xxLargePlus: { fontSize: Math.round(32 * fontSize) },
+    superLarge: { fontSize: Math.round(42 * fontSize) },
+    mega: { fontSize: Math.round(68 * fontSize) }
+  },
+  spacing: {
+    s2: Math.round(4 * fontSize),
+    s1: Math.round(8 * fontSize),
+    m: Math.round(16 * fontSize),
+    l1: Math.round(20 * fontSize),
+    l2: Math.round(32 * fontSize)
+  }
+});

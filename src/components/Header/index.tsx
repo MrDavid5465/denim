@@ -63,13 +63,7 @@ export const Header: React.FC<Props> = ({
         >
           <Stack.Item grow disableShrink>
             <IconButton onClick={openPanel} className={style.headerIconButton}>
-              <Icon
-                iconName={"Waffle"}
-                style={{
-                  fontSize: "2em",
-                  color: theme.palette.themeLighter
-                }}
-              />
+              <Icon iconName={"Waffle"} className={style.waffle} />
             </IconButton>
           </Stack.Item>
           {Brand && (

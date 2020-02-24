@@ -9,7 +9,7 @@ const App: React.FC = () => {
   return (
     <Denim
       //components={{ Admin, ReactiveAdmin, Programs }}
-      themes={{ default: light, light, dark }}
+      themes={{ default: light(), light: light(), dark }}
     />
   );
 };

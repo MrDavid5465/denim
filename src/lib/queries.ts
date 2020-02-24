@@ -114,6 +114,7 @@ const MY = gql`
         serviceDeskKey
         launchPage
         theme
+        fontSize
       }
       groups {
         name
@@ -144,6 +145,7 @@ const UPDATE_MY_USER_SETTINGS = gql`
       serviceDeskKey
       launchPage
       theme
+      fontSize
     }
   }
 `;
@@ -174,6 +176,7 @@ export interface ISettings {
   serviceDeskKey: string;
   launchPage: string;
   theme: string;
+  fontSize: number;
 }
 export interface IAppNav {
   text: string;

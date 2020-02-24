@@ -19,8 +19,9 @@ import { IMy } from "../lib/queries";
 import dispatcher from "../lib/queries";
 import IconSVG, { IconProps } from "../logo";
 
-export const setTheme = (themeString: string, themes: any) => {
-  loadTheme(themes[themeString || "default"] || themes["default"]);
+export const setTheme = (theme: any, themes: any) => {
+  loadTheme(themes[theme.theme || "default"](theme.fontSize));
+  console.log(getTheme());
 };
 export const getCurrentApp = () => {
   return document.location.pathname.split("/")[1];
@@ -46,17 +47,16 @@ const App: React.FC<Props> = ({
 }) => {
   const { loading, data } = useQuery<IMy>(dispatcher.my);
   if (loading) {
-    setTheme("default", themes);
+    setTheme({ theme: "default", fontSize: 1 }, themes);
     return <Splashscreen Icon={Logo} />;
   }
-  setTheme(
-    `${data && data.my && data.my.settings && data.my.settings.theme}`,
-    themes
-  );
+  setTheme(data && data.my && data.my.settings, themes);
   const style = getStyle();
   return (
     <Fabric
-      key={`${data && data.my && data.my.settings && data.my.settings.theme}`}
+      key={`${data && data.my && data.my.settings && data.my.settings.theme}${
+        data?.my?.settings?.fontSize
+      }`}
       applyThemeToBody
     >
       <Route

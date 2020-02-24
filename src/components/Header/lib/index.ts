@@ -19,7 +19,6 @@ export {
   TextField,
   Modal,
   DefaultButton,
-  FontSizes,
   FontWeights,
   getStyle,
   Route,

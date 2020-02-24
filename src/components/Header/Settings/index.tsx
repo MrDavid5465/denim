@@ -33,25 +33,6 @@ const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
           initialValues={settings}
           onChange={handleChange}
         />
-        {/* <TextField
-          name={"launchPage"}
-          label={userSettings(themes).launchPage.label}
-          value={form.launchPage}
-          onChange={handleChange}
-        />
-        <TextField
-          name={"serviceDeskKey"}
-          label={userSettings(themes).serviceDeskKey.label}
-          value={form.serviceDeskKey}
-          onChange={handleChange}
-        />
-        <Dropdown
-          name={"theme"}
-          label={userSettings(themes).theme.label}
-          options={userSettings(themes).theme.options}
-          value={form.theme}
-          onChange={handleSelect}
-        /> */}
       </Stack>
     </Modal>
   );

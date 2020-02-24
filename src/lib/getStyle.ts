@@ -1,5 +1,5 @@
 import { IStyle } from "@uifabric/styling";
-import { ITheme, FontSizes, FontWeights } from "office-ui-fabric-react";
+import { ITheme, FontWeights } from "office-ui-fabric-react";
 
 export interface Style {
   content: IStyle;
@@ -28,6 +28,7 @@ export interface Style {
   appNavLink: IStyle;
   appNavLinkActive: IStyle;
   headerIconButton: IStyle;
+  waffle: IStyle;
   headerLink: IStyle;
   headerLinkContainer: IStyle;
   iconButtonStyle: IStyle;
@@ -39,7 +40,7 @@ export interface Style {
   dropdownLink: IStyle;
   modalHeader: IStyle;
   modalBody: IStyle;
-  app: IStyle;
+  splashScreen: IStyle;
   appLogo: IStyle;
   appHeader: IStyle;
   navBar: IStyle;
@@ -255,7 +256,7 @@ const style = (theme: ITheme) =>
       }
     },
     headerIconButton: {
-      color: theme.semanticColors.primaryButtonText,
+      color: theme.palette.themeLighter,
       backgroundColor: theme.semanticColors.primaryButtonBackground,
       height: "3.85em",
       width: "3.85em",
@@ -271,6 +272,9 @@ const style = (theme: ITheme) =>
           backgroundColor: theme.semanticColors.primaryButtonBackgroundPressed
         }
       }
+    },
+    waffle: {
+      fontSize: "2em"
     },
     dangerButton: {
       background: theme.isInverted ? theme.palette.redDark : theme.palette.red,
@@ -349,13 +353,13 @@ const style = (theme: ITheme) =>
       borderTop: `0.25em solid ${theme.palette.themePrimary}`,
       color: theme.palette.neutralPrimary,
       display: "flex",
-      fontSize: FontSizes.xLarge,
+      fontSize: "1.5em",
       alignItems: "center",
       fontWeight: parseInt(FontWeights.semibold.toString()),
       padding: "0.924em 0.924em 1.078em 1.848em"
     },
     modalBody: { padding: "0 1.848em 1.848em 1.848em" },
-    app: {
+    splashScreen: {
       textAlign: "center",
       backgroundColor: theme.palette.themePrimary,
       color: theme.palette.white
