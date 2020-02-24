@@ -15,7 +15,9 @@ interface Props {
 const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
   const style = getStyle();
   const settingsRef: React.RefObject<any> = React.createRef();
-  const [updateMyUserSettings] = useMutation(dispatcher.updateMyUserSettings);
+  const [updateMyUserSettings] = useMutation(dispatcher.updateMyUserSettings, {
+    onCompleted: () => dismissModal()
+  });
   function handleChange() {
     settingsRef.current.isValid &&
       updateMyUserSettings({
@@ -23,22 +25,27 @@ const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
         refetchQueries: ["my"]
       });
   }
+  console.log(settings);
   return (
     <Modal isOpen={isOpen} onDismiss={dismissModal} titleAriaId={"title"}>
       <Stack className={style.modalHeader}>
         <span id={"title"}>User Settings</span>
       </Stack>
       <Stack className={style.modalBody}>
-        <Form
-          form={userSettings(themes)}
-          name={"userSettings"}
-          initialValues={settings}
-          ref={settingsRef}
-          //onChange={handleChange}
-        />
-        <Stack horizontal tokens={{ childrenGap: "0.77em" }}>
-          <PrimaryButton onClick={handleChange}>Save</PrimaryButton>
-        </Stack>
+        {settings && (
+          <>
+            <Form
+              form={userSettings(themes)}
+              name={"userSettings"}
+              initialValues={settings}
+              ref={settingsRef}
+              //onChange={handleChange}
+            />
+            <Stack horizontal tokens={{ childrenGap: "0.77em" }}>
+              <PrimaryButton onClick={handleChange}>Save</PrimaryButton>
+            </Stack>
+          </>
+        )}
       </Stack>
     </Modal>
   );

@@ -12,12 +12,12 @@ export const userSettings = (themes: any) => ({
     options: Object.keys(themes).map(k => ({ key: k, text: k, value: k }))
   },
   fontSize: {
-    type: "combobox",
+    type: "select",
     label: "Font Size",
     options: [
-      { text: "Small", value: 1.0 },
-      { text: "Medium", value: 1.14 },
-      { text: "Large", value: 1.29 }
+      { text: "Small", value: 1 },
+      { text: "Medium", value: 1.14 }
+      //{ text: "Large", value: 1.29 }
     ],
     defaultNull: 1,
     converter: (

@@ -37,8 +37,8 @@ export { Link, Route, Switch, Redirect, NavLink } from "react-router-dom";
 export { useQuery, useMutation } from "@apollo/react-hooks";
 export { ButtonDropdown } from "./ButtonDropdown";
 export { format } from "date-fns";
-export { default as Form } from "./Templates/Form";
-export { List } from "./List";
+export { default as Form } from "../../../typical-admin-fabric/lib/templates/Form";
+export { default as List } from "../../../typical-admin-fabric/lib/List";
 
 export { getStyle } from "../components";
 
