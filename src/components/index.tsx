@@ -20,7 +20,7 @@ import dispatcher from "../lib/queries";
 import IconSVG, { IconProps } from "../logo";
 
 export const setTheme = (theme: any, themes: any) => {
-  loadTheme(themes[theme.theme || "default"](theme.fontSize));
+  loadTheme(themes[(theme && theme.theme) || "default"](theme.fontSize));
 };
 export const getCurrentApp = () => {
   return document.location.pathname.split("/")[1];
@@ -49,7 +49,10 @@ const App: React.FC<Props> = ({
     setTheme({ theme: "default", fontSize: 1 }, themes);
     return <Splashscreen Icon={Logo} />;
   }
-  setTheme(data && data.my && data.my.settings, themes);
+  setTheme(
+    (data && data.my && data.my.settings) || { theme: "default", fontSize: 1 },
+    themes
+  );
   const style = getStyle();
   return (
     <Fabric
