@@ -111,7 +111,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
           isLightDismiss
           onDismiss={dismissNav}
           isOpen={isNavOpen}
-          customWidth={"272px"}
+          customWidth={"20.94em"}
           type={PanelType.custom}
         >
           {Controls && <Controls />}

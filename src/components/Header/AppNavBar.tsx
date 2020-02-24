@@ -69,7 +69,7 @@ export const AppNavBar: React.FC<Props> = ({
   return (
     <Panel
       isLightDismiss
-      customWidth={"272px"}
+      customWidth={"20.94em"}
       type={PanelType.customNear}
       isOpen={isOpen}
       onDismiss={dismissPanel}
