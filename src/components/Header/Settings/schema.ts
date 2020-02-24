@@ -15,7 +15,7 @@ export const userSettings = (themes: any) => ({
     type: "combobox",
     label: "Font Size",
     options: [
-      { text: "Small", value: 1 },
+      { text: "Small", value: 1.0 },
       { text: "Medium", value: 1.14 },
       { text: "Large", value: 1.29 }
     ],
