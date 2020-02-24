@@ -111,7 +111,6 @@ const MY = gql`
       settings {
         id
         sAMAccountName
-        serviceDeskKey
         launchPage
         theme
         fontSize
