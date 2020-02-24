@@ -21,7 +21,6 @@ import IconSVG, { IconProps } from "../logo";
 
 export const setTheme = (theme: any, themes: any) => {
   loadTheme(themes[theme.theme || "default"](theme.fontSize));
-  console.log(getTheme());
 };
 export const getCurrentApp = () => {
   return document.location.pathname.split("/")[1];
