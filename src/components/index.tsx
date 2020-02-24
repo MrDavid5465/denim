@@ -152,7 +152,7 @@ const App: React.FC<Props> = ({
                 render={props => {
                   const Component = components[app.frontEnd] || Empty;
                   return (
-                    <Stack className={style.content} style={{ paddingTop: 0 }}>
+                    <Stack className={style.content} style={{ top: "0em" }}>
                       {app.defaultRoute && (
                         <Route
                           path={`/kiosk/${app.path}`}

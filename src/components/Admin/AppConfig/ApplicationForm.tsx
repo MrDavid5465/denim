@@ -99,7 +99,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
   }
   return (
     <>
-      <Stack style={{ maxWidth: 500 }}>
+      <Stack style={{ maxWidth: "38.5em" }}>
         <Form
           ref={appForm}
           name={"application"}
@@ -108,7 +108,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
         />
       </Stack>
       <Stack
-        style={{ paddingTop: 10 }}
+        style={{ paddingTop: "0.77em" }}
         wrap
         horizontal
         horizontalAlign={"space-between"}
@@ -122,7 +122,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
       <Stack wrap horizontal>
         {app.roles.map((r: IRole, i: number) => {
           return (
-            <Stack style={{ padding: 10, minWidth: 250 }} key={i}>
+            <Stack style={{ padding: "0.77em", minWidth: "21.5em" }} key={i}>
               <Stack.Item align={"end"}>
                 <IconButton name={`role.${i}`} onClick={removeRole}>
                   <Icon iconName={"Remove"} />
@@ -145,7 +145,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
         })}
       </Stack>
       <Stack
-        style={{ paddingTop: 10 }}
+        style={{ paddingTop: "0.77em" }}
         wrap
         horizontal
         horizontalAlign={"space-between"}
@@ -159,7 +159,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
       <Stack wrap horizontal>
         {app.links.map((l: ILink, i: number) => {
           return (
-            <Stack style={{ padding: 10, minWidth: 250 }} key={i}>
+            <Stack style={{ padding: "0.77em", minWidth: "21.5em" }} key={i}>
               <Stack.Item align={"end"}>
                 <IconButton
                   name={

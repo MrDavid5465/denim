@@ -19,23 +19,23 @@ export const HeaderLink: React.FC<Props> = ({
   const style = getStyle();
 
   return (
-    <Link to={to} className={`${style.headerLink} ${className}`}>
+    <Link to={to}>
       <Stack
         verticalAlign={"center"}
         className={style.headerLinkContainer}
         style={
           active
             ? {
-                borderTop: `4px solid ${theme.palette.themePrimary}`,
-                borderBottom: `4px solid ${theme.palette.themeTertiary}`
+                borderTop: `0.308em solid ${theme.palette.themePrimary}`,
+                borderBottom: `0.308em solid ${theme.palette.themeTertiary}`
               }
             : {
-                borderTop: `4px solid ${theme.palette.themePrimary}`,
-                borderBottom: `4px solid ${theme.palette.themePrimary}`
+                borderTop: `0.308em solid ${theme.palette.themePrimary}`,
+                borderBottom: `0.308em solid ${theme.palette.themePrimary}`
               }
         }
       >
-        {children}
+        <span className={`${style.headerLink} ${className}`}>{children}</span>
       </Stack>
     </Link>
   );

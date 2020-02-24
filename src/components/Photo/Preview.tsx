@@ -4,10 +4,10 @@ export default React.forwardRef(
   ({ cropping, height, width }: any, ref: any) => {
     const dimension =
       width === height
-        ? { height: "198px", width: "198px" }
+        ? { height: "15.246em", width: "15.246em" }
         : width > height
-        ? { height: "auto", width: "198px" }
-        : { height: "198px", width: "auto" };
+        ? { height: "auto", width: "15.246em" }
+        : { height: "15.246em", width: "auto" };
 
     return (
       <div id="preview" style={{ display: cropping ? "block" : "none" }}>
@@ -15,7 +15,7 @@ export default React.forwardRef(
           style={{
             ...dimension,
             border: "dashed",
-            borderRadius: 5
+            borderRadius: "0.385em"
           }}
           ref={ref}
         />

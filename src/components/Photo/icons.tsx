@@ -21,7 +21,7 @@ export const IconButton: React.FC<any> = props => {
 export const UserIcon = () => <Icon iconName={"UserEvent"} />;
 export const ImageIcon = () => (
   <Icon
-    style={{ height: 196, width: 196, fontSize: 196 }}
+    style={{ height: "15.092em", width: "15.092em", fontSize: "15.092em" }}
     iconName={"PictureFill"}
   />
 );

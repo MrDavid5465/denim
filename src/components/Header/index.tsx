@@ -46,23 +46,27 @@ export const Header: React.FC<Props> = ({
         horizontal
         horizontalAlign={"space-between"}
         verticalAlign={"center"}
-        tokens={{ childrenGap: 10, maxHeight: 50 }}
+        tokens={{ childrenGap: "0.77em", maxHeight: "3.85em" }}
         style={{
           backgroundColor: theme.semanticColors.primaryButtonBackground,
           color: theme.palette.themeLighter,
           position: "fixed",
           width: "100vw",
-          minWidth: 320,
+          minWidth: "24.64em",
           zIndex: 1000
         }}
       >
-        <Stack verticalAlign={"center"} horizontal tokens={{ childrenGap: 10 }}>
+        <Stack
+          verticalAlign={"center"}
+          horizontal
+          tokens={{ childrenGap: "0.77em" }}
+        >
           <Stack.Item grow disableShrink>
             <IconButton onClick={openPanel} className={style.headerIconButton}>
               <Icon
                 iconName={"Waffle"}
                 style={{
-                  fontSize: theme.fonts.xLargePlus.fontSize,
+                  fontSize: "2em",
                   color: theme.palette.themeLighter
                 }}
               />
@@ -72,10 +76,10 @@ export const Header: React.FC<Props> = ({
             <Brand
               style={{
                 fill: theme.palette.themeLighter,
-                height: 35,
-                minHeight: 35,
-                maxHeight: 35,
-                width: 35
+                height: "2.695em",
+                minHeight: "2.695em",
+                maxHeight: "2.695em",
+                width: "2.695em"
               }}
             />
           )}

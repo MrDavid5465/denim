@@ -66,9 +66,9 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
                     <Stack
                       className={style.hiddenLgDown}
                       verticalAlign={"center"}
-                      style={{ paddingRight: 12 }}
+                      style={{ paddingRight: "0.924em" }}
                       horizontal
-                      tokens={{ childrenGap: 10 }}
+                      tokens={{ childrenGap: "0.77em" }}
                     >
                       {app.links &&
                         app.links.map(l => {
@@ -95,7 +95,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
       </Stack>
       <Stack
         horizontal
-        style={{ position: "absolute", top: 0, right: 0 }}
+        style={{ position: "absolute", top: "0em", right: "0em" }}
         className={style.hiddenXlUp}
       >
         <IconButton onClick={openNav} className={style.iconButtonStyle}>

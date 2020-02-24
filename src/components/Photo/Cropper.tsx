@@ -28,7 +28,7 @@ const Cropper: React.FC<Props> = ({
         width: `${width}px`,
         height: `${height}px`,
         border: "dashed",
-        borderRadius: 5,
+        borderRadius: "0.385em",
         marginBottom: "0.25em",
         display: cropping ? "block" : "none"
       }}

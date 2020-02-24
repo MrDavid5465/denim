@@ -10,7 +10,7 @@ export default React.forwardRef((props: any, ref: any) => (
     <canvas
       style={{
         border: "dashed",
-        borderRadius: 5
+        borderRadius: "0.385em"
       }}
       ref={ref}
     />
