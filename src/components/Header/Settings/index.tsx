@@ -3,7 +3,6 @@ import { Modal, useMutation, Stack, getStyle } from "../lib";
 import { userSettings } from "./schema";
 import dispatcher, { ISettings } from "../../../lib/queries";
 import { Form, PrimaryButton } from "../../../lib";
-import { RefObject } from "office-ui-fabric-react";
 
 interface Props {
   isOpen: boolean;
