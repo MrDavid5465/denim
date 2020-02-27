@@ -1,15 +1,14 @@
-import { default as Denim } from "./src/components";
+import Denim from "./components";
 
-export { default as light } from "./src/lib/light";
-export { default as dark } from "./src/lib/dark";
+export { default as light } from "./lib/light";
+export { default as dark } from "./lib/dark";
+export { default as Logo } from "./logo";
+export { default as denimDispatcher } from "./lib/queries";
 
-export { getCurrentApp, getStyle } from "./src/components";
-export { default as styles } from "./src/lib/getStyle";
-
-export { default as Admin } from "./src/components/Admin";
-export { default as Logo } from "./src/logo";
-export { HeaderLink } from "./src/components/Header/lib/HeaderLink";
-export { default as denimDispatcher } from "./src/lib/queries";
-export { FLink } from "./src/lib";
+export { default as styles } from "./lib/getStyle";
+export { default as Denim } from "./components";
+export { default as Admin } from "./components/Admin";
+export { HeaderLink } from "./components/Header/lib/HeaderLink";
+export { FLink, getStyle, getCurrentApp } from "./lib";
 
 export default Denim;
