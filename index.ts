@@ -11,4 +11,6 @@ export { default as Admin } from "./components/Admin";
 export { HeaderLink } from "./components/Header/lib/HeaderLink";
 export { FLink, getStyle, getCurrentApp } from "./lib";
 
+export * from "./lib/queries";
+
 export default Denim;
