@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Stack } from "../lib";
 import { getStyle } from "../../../lib";
-import { set } from "date-fns/esm";
 
 interface Props {
   close: () => void;
