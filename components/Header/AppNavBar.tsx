@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Panel, PanelType, Nav, DefaultButton } from './lib';
-import { IUser, ISettings } from '../../lib/queries';
-import Settings from './Settings';
-import { INavLink } from 'office-ui-fabric-react';
-import { useHistory } from 'react-router';
-import { getCurrentApp } from '../../lib';
+import React, { useState } from "react";
+import { Panel, PanelType, Nav, DefaultButton } from "./lib";
+import { IUser, ISettings } from "../../lib/queries";
+import Settings from "./Settings";
+import { INavLink } from "office-ui-fabric-react";
+import { useHistory } from "react-router";
+import { getCurrentApp } from "../../lib";
 interface Props {
   my: Partial<IUser>;
   isOpen: boolean;
@@ -18,7 +18,7 @@ export const AppNavBar: React.FC<Props> = ({
   isOpen,
   dismissPanel,
   themes,
-  ExternalApps,
+  ExternalApps
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const history = useHistory();
@@ -33,7 +33,7 @@ export const AppNavBar: React.FC<Props> = ({
     ? my.applications.map(app => ({
         name: `${app.name}`,
         groupData: {
-          url: (app.defaultRoute && `/${app.path}`) || `/${app.path}`,
+          url: (app.defaultRoute && `/${app.path}`) || `/${app.path}`
         },
         isExpanded: app.path === openGroup,
         url: (app.defaultRoute && `/${app.path}`) || `/${app.path}`,
@@ -61,15 +61,15 @@ export const AppNavBar: React.FC<Props> = ({
             .map(l => ({
               name: l.text,
               url: `/${app.path}/${l.path}`,
-              key: `/${app.path}/${l.path}`,
-            })),
+              key: `/${app.path}/${l.path}`
+            }))
       }))
-    : [{ name: 'Loading...', url: '', key: 'loading', disabled: true }];
+    : [{ name: "Loading...", url: "", key: "loading", disabled: true }];
   const settings: Partial<ISettings> = my.settings ? my.settings : {};
   return (
     <Panel
       isLightDismiss
-      customWidth={'20.94em'}
+      customWidth={"20.94em"}
       type={PanelType.customNear}
       isOpen={isOpen}
       onDismiss={dismissPanel}
@@ -93,12 +93,13 @@ export const AppNavBar: React.FC<Props> = ({
         selectedKey={history.location.pathname}
         groups={[
           {
-            links: applications,
-          },
+            links: applications
+          }
         ]}
         onLinkClick={(ev?: any, item?: INavLink) => {
           ev?.preventDefault();
           item && history.push(item.url);
+          dismissPanel();
         }}
         isOnTop={false}
       />

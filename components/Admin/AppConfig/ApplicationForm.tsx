@@ -18,6 +18,7 @@ import dispatcher, {
   IGroup,
   IListGroups
 } from "../../../lib/queries";
+import Alert from "./Alert";
 interface Props {
   application: any;
 }
@@ -26,11 +27,24 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
   const { data } = useQuery<IListGroups>(dispatcher.listGroups);
   const groups = data?.getGroups || [];
   const [app, setApp] = useState(application);
+  const [message, setMessage] = useState<string | undefined>();
   const appForm: React.RefObject<any> = createRef();
   const [roles, setRoles] = useState(app.roles.map(() => createRef()));
   const [links, setLinks] = useState(app.links.map(() => createRef()));
-  const [updateApplication] = useMutation(dispatcher.updateApplication);
-  const [addApplication] = useMutation(dispatcher.addApplication);
+  const [updateApplication] = useMutation(dispatcher.updateApplication, {
+    onCompleted: data =>
+      setMessage(
+        `Application ${data.updateApplication.name} updated successfully`
+      )
+  });
+  const [addApplication] = useMutation(dispatcher.addApplication, {
+    onCompleted: data => {
+      setMessage(
+        `Application ${data.addApplication.name} updated successfully`
+      );
+      setApp(data.addApplication.id);
+    }
+  });
 
   function handleSubmit() {
     application.id === "new"
@@ -98,8 +112,12 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
   function handleRoleChange() {
     setApp(submit());
   }
+  function closeAlert() {
+    setMessage(undefined);
+  }
   return (
     <>
+      {message && <Alert close={closeAlert} message={message} />}
       <Stack style={{ maxWidth: "38.5em" }}>
         <Form
           ref={appForm}

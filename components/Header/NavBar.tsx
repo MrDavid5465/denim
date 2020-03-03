@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Stack,
   IconButton,
@@ -11,11 +11,11 @@ import {
   HeaderLink,
   Switch,
   Route,
-  getStyle,
-} from './lib';
-import { IUser } from '../../lib/queries';
-import { useHistory } from 'react-router';
-import { INavLink } from 'office-ui-fabric-react';
+  getStyle
+} from "./lib";
+import { IUser } from "../../lib/queries";
+import { useHistory } from "react-router";
+import { INavLink } from "office-ui-fabric-react";
 
 interface Props {
   my: Partial<IUser>;
@@ -49,12 +49,12 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
               );
             }).length > 0
           );
-        }),
+        })
     }));
 
   return (
     <Stack className={className}>
-      <Stack horizontal horizontalAlign={'end'}>
+      <Stack horizontal horizontalAlign={"end"}>
         <Switch>
           {apps &&
             apps.map(app => {
@@ -65,10 +65,10 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
                   render={props => (
                     <Stack
                       className={style.hiddenLgDown}
-                      verticalAlign={'center'}
-                      style={{ paddingRight: '0.924em' }}
+                      verticalAlign={"center"}
+                      style={{ paddingRight: "0.924em" }}
                       horizontal
-                      tokens={{ childrenGap: '0.77em' }}
+                      tokens={{ childrenGap: "0.77em" }}
                     >
                       {app.links &&
                         app.links.map(l => {
@@ -95,15 +95,15 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
       </Stack>
       <Stack
         horizontal
-        style={{ position: 'absolute', top: '0em', right: '0em' }}
+        style={{ position: "absolute", top: "0em", right: "0em" }}
         className={style.hiddenXlUp}
       >
         <IconButton onClick={openNav} className={style.iconButtonStyle}>
           <Icon
-            iconName={'GlobalNavButton'}
+            iconName={"GlobalNavButton"}
             style={{
-              fontSize: '1.7em',
-              color: theme.semanticColors.primaryButtonText,
+              fontSize: "1.7em",
+              color: theme.semanticColors.primaryButtonText
             }}
           />
         </IconButton>
@@ -111,7 +111,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
           isLightDismiss
           onDismiss={dismissNav}
           isOpen={isNavOpen}
-          customWidth={'20.94em'}
+          customWidth={"20.94em"}
           type={PanelType.custom}
         >
           {Controls && <Controls />}
@@ -126,14 +126,15 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
                       onLinkClick={(ev?: any, item?: INavLink) => {
                         ev?.preventDefault();
                         item && history.push(item.url);
+                        dismissNav();
                       }}
                       groups={[
                         {
                           links: app.links.map(l => ({
                             name: l.text,
-                            url: `/${app.path}/${l.path}`,
-                          })),
-                        },
+                            url: `/${app.path}/${l.path}`
+                          }))
+                        }
                       ]}
                       {...props}
                     />
