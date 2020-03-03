@@ -272,6 +272,7 @@ const style = (theme: ITheme) =>
           backgroundColor: theme.semanticColors.primaryButtonBackgroundHovered
         },
         ":active": {
+          color: theme.semanticColors.primaryButtonTextPressed,
           backgroundColor: theme.semanticColors.primaryButtonBackgroundPressed
         }
       }
@@ -347,6 +348,7 @@ const style = (theme: ITheme) =>
           backgroundColor: theme.semanticColors.primaryButtonBackgroundHovered
         },
         ":active": {
+          color: theme.semanticColors.primaryButtonTextHovered,
           backgroundColor: theme.semanticColors.primaryButtonBackgroundPressed
         }
       }
