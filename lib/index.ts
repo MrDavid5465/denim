@@ -51,4 +51,6 @@ export interface IndexableObject {
   [key: string]: any;
 }
 
-initializeIcons("./assets/fonts/");
+initializeIcons(
+  `http://${process.env.REACT_APP_TYPICAL_SERVER_NAME}/assets/fonts/`
+);
