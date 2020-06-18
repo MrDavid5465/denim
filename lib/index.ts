@@ -1,8 +1,5 @@
-import {
-  initializeIcons,
-  mergeStyleSets,
-  getTheme
-} from "office-ui-fabric-react";
+import { mergeStyleSets, getTheme } from "office-ui-fabric-react";
+import { initializeIcons } from "@uifabric/icons";
 import stylesJson from "./getStyle";
 export {
   Fabric,
@@ -35,7 +32,7 @@ export {
   SelectionMode,
   TagPicker,
   ChoiceGroup,
-  Dialog
+  Dialog,
 } from "office-ui-fabric-react";
 export { useConstCallback } from "@uifabric/react-hooks";
 export { Link, Route, Switch, Redirect, NavLink } from "react-router-dom";
@@ -54,4 +51,4 @@ export interface IndexableObject {
   [key: string]: any;
 }
 
-initializeIcons();
+initializeIcons("./assets/fonts/");
