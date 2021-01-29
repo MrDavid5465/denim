@@ -54,5 +54,5 @@ export interface IndexableObject {
 process.env.REACT_APP_ENV === "local"
   ? initializeIcons()
   : initializeIcons(
-      `http://${process.env.REACT_APP_TYPICAL_SERVER_NAME}/assets/fonts/`
+      `/assets/fonts/`
     );
