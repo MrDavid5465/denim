@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 const GET_APPLICATIONS = gql`
   query getApplications {
     getApplications {
@@ -68,18 +68,20 @@ const ADD_APPLICATION = gql`
 export interface IAddApplication {
   addApplication: Partial<IApplication>;
 }
-const GET_GROUPS = gql`
-  query getGroups {
-    getGroups {
-      id
-      sAMAccountName
+const GET_TYPIQL_ROLES = gql`
+  query getTypiQLRoles {
+    getTypiQLRoles {
       name
-      distinguishedName
+      value
     }
   }
 `;
-export interface IListGroups {
-  getGroups: Array<IGroup>;
+export interface IListTypiQLRoles {
+  getTypiQLRoles: Array<ITypiQLRole>;
+}
+export interface ITypiQLRole {
+  name: string;
+  value: string;
 }
 export interface IGroup {
   sid: string;
@@ -226,7 +228,7 @@ const dispatcher = {
   getUsers: USERS,
   updateMyUserSettings: UPDATE_MY_USER_SETTINGS,
   listApplications: GET_APPLICATIONS,
-  listGroups: GET_GROUPS,
+  listTypiqlRoles: GET_TYPIQL_ROLES,
   addApplication: ADD_APPLICATION,
   updateApplication: UPDATE_APPLICATION,
   getFile: GET_FILE,

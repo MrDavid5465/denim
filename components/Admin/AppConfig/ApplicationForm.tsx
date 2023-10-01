@@ -6,7 +6,7 @@ import {
   IconButton,
   Label,
   PrimaryButton,
-  useMutation
+  useMutation,
 } from "../lib";
 import { Form } from "../../../../typical-admin-fabric/lib";
 
@@ -16,7 +16,8 @@ import dispatcher, {
   IRole,
   ILink,
   IGroup,
-  IListGroups
+  IListTypiQLRoles,
+  ITypiQLRole,
 } from "../../../lib/queries";
 import Alert from "./Alert";
 interface Props {
@@ -24,42 +25,42 @@ interface Props {
 }
 
 export const ApplicationForm: React.FC<Props> = ({ application }) => {
-  const { data } = useQuery<IListGroups>(dispatcher.listGroups);
-  const groups = data?.getGroups || [];
+  const { data } = useQuery<IListTypiQLRoles>(dispatcher.listTypiqlRoles);
+  const groups = data?.getTypiQLRoles || [];
   const [app, setApp] = useState(application);
   const [message, setMessage] = useState<string | undefined>();
   const appForm: React.RefObject<any> = createRef();
   const [roles, setRoles] = useState(app.roles.map(() => createRef()));
   const [links, setLinks] = useState(app.links.map(() => createRef()));
   const [updateApplication] = useMutation(dispatcher.updateApplication, {
-    onCompleted: data =>
+    onCompleted: (data) =>
       setMessage(
         `Application ${data.updateApplication.name} updated successfully`
-      )
+      ),
   });
   const [addApplication] = useMutation(dispatcher.addApplication, {
-    onCompleted: data => {
+    onCompleted: (data) => {
       setMessage(
         `Application ${data.addApplication.name} updated successfully`
       );
       setApp(data.addApplication.id);
-    }
+    },
   });
 
   function handleSubmit() {
     application.id === "new"
       ? addApplication({
           variables: {
-            application: submit()
+            application: submit(),
           },
-          refetchQueries: ["getApplications", "my"]
+          refetchQueries: ["getApplications", "my"],
         })
       : updateApplication({
           variables: {
             id: application.id,
-            application: submit()
+            application: submit(),
           },
-          refetchQueries: ["getApplications", "my"]
+          refetchQueries: ["getApplications", "my"],
         });
   }
 
@@ -71,7 +72,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
       ),
       links: links.map(
         (r: React.RefObject<any>) => r && r.current && r.current.submit()
-      )
+      ),
     };
   }
   function addLink() {
@@ -88,7 +89,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
       ...app,
       roles: app.roles.filter(
         (_: IRole, i: number) => `role.${i}` !== target.name
-      )
+      ),
     });
     setRoles(
       roles.filter(
@@ -100,7 +101,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
     const target: IndexableObject = e.currentTarget;
     setApp({
       ...app,
-      links: app.links.filter((r: ILink) => r.path !== target.name)
+      links: app.links.filter((r: ILink) => r.path !== target.name),
     });
     setLinks(
       links.filter(
@@ -150,9 +151,9 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
               <Form
                 ref={roles[i]}
                 form={roleSchema(
-                  groups.map((g: IGroup) => ({
-                    text: g.name,
-                    value: g.name
+                  groups.map((g: ITypiQLRole) => ({
+                    text: g.value,
+                    value: g.value,
                   })) || []
                 )}
                 name={`role.${i}`}
@@ -196,7 +197,7 @@ export const ApplicationForm: React.FC<Props> = ({ application }) => {
                     return r && r.current
                       ? {
                           text: r.current.submit().name,
-                          value: r.current.submit().name
+                          value: r.current.submit().name,
                         }
                       : {};
                   })

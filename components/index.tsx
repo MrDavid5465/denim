@@ -8,7 +8,7 @@ import {
   Stack,
   Switch,
   Route,
-  Redirect
+  Redirect,
 } from "../lib";
 import { Header } from "./Header";
 import Splashscreen from "./Splashscreen";
@@ -16,6 +16,8 @@ import { useQuery } from "@apollo/react-hooks";
 import { IMy } from "../lib/queries";
 import dispatcher from "../lib/queries";
 import IconSVG, { IconProps } from "../logo";
+import { Mutation } from "@apollo/react-components";
+import gql from "graphql-tag";
 
 export const setTheme = (theme: any, themes: any) => {
   loadTheme(themes[(theme && theme.theme) || "default"](theme.fontSize || 1));
@@ -37,12 +39,32 @@ const App: React.FC<Props> = ({
   Brand,
   RootComponent,
   Controls,
-  ExternalApps
+  ExternalApps,
 }) => {
-  const { loading, data } = useQuery<IMy>(dispatcher.my);
+  const { loading, data, error } = useQuery<IMy>(dispatcher.my);
   if (loading) {
     setTheme({ theme: "default", fontSize: 1 }, themes);
     return <Splashscreen Icon={Logo} />;
+  } else if (
+    error &&
+    process.env.REACT_APP_TYPICAL_SERVER_NAME == "localhost"
+  ) {
+    return (
+      <Mutation
+        mutation={gql`
+          mutation login {
+            login(username: "developer", password: "") {
+              id
+              userName
+              firstName
+              surname
+            }
+          }
+        `}
+      >
+        {() => <></>}
+      </Mutation>
+    );
   }
   setTheme(
     (data && data.my && data.my.settings) || { theme: "default", fontSize: 1 },
@@ -71,7 +93,7 @@ const App: React.FC<Props> = ({
       />
       <Route
         path={"/:render"}
-        render={props => {
+        render={(props) => {
           return props.match.params.render !== undefined &&
             props.match.params.render === "kiosk" ? (
             <></>
@@ -91,7 +113,7 @@ const App: React.FC<Props> = ({
         <Route
           path={"/"}
           exact
-          render={props => (
+          render={(props) => (
             <Stack className={style.content}>
               {RootComponent ? (
                 <RootComponent {...props} />
@@ -117,7 +139,7 @@ const App: React.FC<Props> = ({
               <Route
                 key={i}
                 path={`/${app.path}`}
-                render={props => {
+                render={(props) => {
                   const Component = components[app.frontEnd] || Empty;
                   return (
                     <Stack className={style.content}>
@@ -146,7 +168,7 @@ const App: React.FC<Props> = ({
               <Route
                 key={i}
                 path={`/kiosk/${app.path}`}
-                render={props => {
+                render={(props) => {
                   const Component = components[app.frontEnd] || Empty;
                   return (
                     <Stack className={style.content} style={{ top: "0em" }}>
