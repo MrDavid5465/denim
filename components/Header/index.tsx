@@ -7,7 +7,7 @@ import {
   getTheme,
   Switch,
   Route,
-  getStyle
+  getStyle,
 } from "./lib";
 import { useConstCallback } from "@uifabric/react-hooks";
 import { AppNavBar } from "./AppNavBar";
@@ -16,6 +16,7 @@ import { IApplication } from "../../lib/queries";
 
 interface Props {
   my: any;
+  match: any;
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
   themes: any;
@@ -24,10 +25,11 @@ interface Props {
 
 export const Header: React.FC<Props> = ({
   my,
+  match,
   Brand,
   themes,
   Controls,
-  ExternalApps
+  ExternalApps,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
@@ -39,7 +41,7 @@ export const Header: React.FC<Props> = ({
       style={{
         backgroundColor: theme.semanticColors.primaryButtonBackgroundHovered,
         color: theme.palette.themeLighter,
-        width: "100vw"
+        width: "100vw",
       }}
     >
       <Stack
@@ -53,7 +55,7 @@ export const Header: React.FC<Props> = ({
           position: "fixed",
           width: "100vw",
           minWidth: "24.64em",
-          zIndex: 1000
+          zIndex: 1000,
         }}
       >
         <Stack
@@ -66,21 +68,25 @@ export const Header: React.FC<Props> = ({
           </IconButton>
 
           {Brand && (
-            <Brand
-              style={{
-                fill: theme.palette.themeLighter,
-                height: "2.695em",
-                minHeight: "2.695em",
-                maxHeight: "2.695em",
-                width: "2.695em"
-              }}
-            />
+            <>
+              <Brand
+                match={match}
+                style={{
+                  fill: theme.palette.themeLighter,
+                  height: "2.695em",
+                  minHeight: "2.695em",
+                  maxHeight: "2.695em",
+                  width: "2.695em",
+                }}
+              />
+              <Stack className={style.headerDropdown}></Stack>
+            </>
           )}
           <Switch>
             <Route
               path={`/`}
               exact
-              render={props => (
+              render={(props) => (
                 <HeaderLink to={`/`} {...props}>
                   Home
                 </HeaderLink>
@@ -91,7 +97,7 @@ export const Header: React.FC<Props> = ({
                 <Route
                   key={app.path}
                   path={`/${app.path}`}
-                  render={props => (
+                  render={(props) => (
                     <HeaderLink to={`/${app.path}`} {...props}>
                       {app.name}
                     </HeaderLink>

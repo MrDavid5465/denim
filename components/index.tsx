@@ -45,10 +45,7 @@ const App: React.FC<Props> = ({
   if (loading) {
     setTheme({ theme: "default", fontSize: 1 }, themes);
     return <Splashscreen Icon={Logo} />;
-  } else if (
-    error &&
-    process.env.REACT_APP_TYPICAL_SERVER_NAME == "localhost"
-  ) {
+  } else if (error && window.location.origin == "http://localhost:3000") {
     return (
       <Mutation
         mutation={gql`
@@ -81,9 +78,10 @@ const App: React.FC<Props> = ({
       <Route
         exact
         path={"/"}
-        render={() => (
+        render={(props) => (
           <Header
             my={data && data.my}
+            {...props}
             Brand={Brand}
             Controls={Controls}
             ExternalApps={ExternalApps}
@@ -100,6 +98,7 @@ const App: React.FC<Props> = ({
           ) : (
             <Header
               my={data && data.my}
+              {...props}
               Brand={Brand}
               Controls={Controls}
               ExternalApps={ExternalApps}

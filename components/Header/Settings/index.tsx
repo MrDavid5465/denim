@@ -1,8 +1,8 @@
-import React from 'react';
-import { Modal, useMutation, Stack, getStyle } from '../lib';
-import { userSettings } from './schema';
-import dispatcher, { ISettings } from '../../../lib/queries';
-import { Form, PrimaryButton } from '../../../lib';
+import React from "react";
+import { Modal, useMutation, Stack, getStyle } from "../lib";
+import { userSettings } from "./schema";
+import dispatcher, { ISettings } from "../../../lib/queries";
+import { Form, PrimaryButton } from "../../../lib";
 
 interface Props {
   isOpen: boolean;
@@ -21,25 +21,25 @@ const Index: React.FC<Props> = ({ isOpen, dismissModal, settings, themes }) => {
     settingsRef.current.isValid &&
       updateMyUserSettings({
         variables: { settings: settingsRef.current.submit() },
-        refetchQueries: ['my'],
+        refetchQueries: ["my"],
       });
   }
   return (
-    <Modal isOpen={isOpen} onDismiss={dismissModal} titleAriaId={'title'}>
+    <Modal isOpen={isOpen} onDismiss={dismissModal} titleAriaId={"title"}>
       <Stack className={style.modalHeader}>
-        <span id={'title'}>User Settings</span>
+        <span id={"title"}>User Settings</span>
       </Stack>
       <Stack className={style.modalBody}>
         {settings && (
           <>
             <Form
-              form={userSettings(themes)}
-              name={'userSettings'}
+              form={userSettings(themes, {})}
+              name={"userSettings"}
               initialValues={settings}
               ref={settingsRef}
               //onChange={handleChange}
             />
-            <Stack horizontal tokens={{ childrenGap: '0.77em' }}>
+            <Stack horizontal tokens={{ childrenGap: "0.77em" }}>
               <PrimaryButton onClick={handleChange}>Save</PrimaryButton>
             </Stack>
           </>
