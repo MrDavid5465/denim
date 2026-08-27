@@ -34,11 +34,13 @@ const Cropper: React.FC<Props> = ({
       }}
     >
       <ReactCrop
-        onImageLoaded={methods.imageLoaded}
-        onComplete={methods.cropComplete}
-        src={base64URL || ''}
-        onChange={methods.crop}
-        crop={crop}
+        {...({
+          onImageLoaded: methods.imageLoaded,
+          onComplete: methods.cropComplete,
+          src: base64URL || '',
+          onChange: methods.crop,
+          crop,
+        } as any)}
       />
     </div>
     <SelectedControls

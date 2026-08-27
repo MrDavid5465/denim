@@ -1,41 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Stack,
   HeaderLink,
   Icon,
   IconButton,
   getTheme,
-  Switch,
+  Routes,
   Route,
-  getStyle,
+  getStyle
 } from "./lib";
-import { useConstCallback } from "@uifabric/react-hooks";
 import { AppNavBar } from "./AppNavBar";
 import { NavBar } from "./NavBar";
 import { IApplication } from "../../lib/queries";
 
 interface Props {
   my: any;
-  match: any;
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
-  themes: any;
   ExternalApps?: React.FC<any>;
 }
 
 export const Header: React.FC<Props> = ({
   my,
-  match,
   Brand,
-  themes,
   Controls,
-  ExternalApps,
+  ExternalApps
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = getTheme();
   const style = getStyle();
-  const openPanel = useConstCallback(() => setIsOpen(true));
-  const dismissPanel = useConstCallback(() => setIsOpen(false));
+  const openPanel = useCallback(() => setIsOpen(true), []);
+  const dismissPanel = useCallback(() => setIsOpen(false), []);
   return (
     <div
       style={{
@@ -43,19 +38,19 @@ export const Header: React.FC<Props> = ({
         color: theme.palette.themeLighter,
         width: "100vw",
       }}
-    >
+      >
       <Stack
         horizontal
         horizontalAlign={"space-between"}
         verticalAlign={"center"}
         tokens={{ childrenGap: "0.77em", maxHeight: "3.85em" }}
-        style={{
+        style={{      
           backgroundColor: theme.semanticColors.primaryButtonBackground,
           color: theme.palette.themeLighter,
           position: "fixed",
           width: "100vw",
           minWidth: "24.64em",
-          zIndex: 1000,
+          zIndex: 1000
         }}
       >
         <Stack
@@ -68,49 +63,44 @@ export const Header: React.FC<Props> = ({
           </IconButton>
 
           {Brand && (
-            <>
-              <Brand
-                match={match}
-                style={{
-                  fill: theme.palette.themeLighter,
-                  height: "2.695em",
-                  minHeight: "2.695em",
-                  maxHeight: "2.695em",
-                  width: "2.695em",
-                }}
-              />
-              <Stack className={style.headerDropdown}></Stack>
-            </>
+            <Brand
+              style={{
+                fill: theme.palette.themeLighter,
+                height: "2.695em",
+                minHeight: "2.695em",
+                maxHeight: "2.695em",
+                width: "2.695em"
+              }}
+            />
           )}
-          <Switch>
+          <Routes>
             <Route
-              path={`/`}
-              exact
-              render={(props) => (
-                <HeaderLink to={`/`} {...props}>
+              path={`/*`}
+              // exact
+              element={
+                <HeaderLink to={`/`}>
                   Home
                 </HeaderLink>
-              )}
+              }
             />
-            {my.applications &&
+            {my?.applications &&
               my.applications.map((app: IApplication) => (
                 <Route
                   key={app.path}
-                  path={`/${app.path}`}
-                  render={(props) => (
-                    <HeaderLink to={`/${app.path}`} {...props}>
+                  path={`/${app.path}/*`}
+                  element={
+                    <HeaderLink to={`/${app.path}`}>
                       {app.name}
                     </HeaderLink>
-                  )}
+                  }
                 />
               ))}
-          </Switch>
+          </Routes>
         </Stack>
         <AppNavBar
           isOpen={isOpen}
           dismissPanel={dismissPanel}
           my={my}
-          themes={themes}
           ExternalApps={ExternalApps}
         />
         <NavBar my={my} Controls={Controls} className={style.navBar} />

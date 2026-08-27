@@ -1,5 +1,5 @@
 import React from 'react';
-import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react';
+import { PrimaryButton, DefaultButton } from '@fluentui/react';
 
 export const ButtonDropdown: React.FC<any> = ({
   value,

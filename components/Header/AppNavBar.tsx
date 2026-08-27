@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { Panel, PanelType, Nav, DefaultButton } from "./lib";
 import { IUser, ISettings } from "../../lib/queries";
 import Settings from "./Settings";
-import { INavLink } from "office-ui-fabric-react";
-import { useHistory } from "react-router";
+import { INavLink } from "@fluentui/react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getCurrentApp } from "../../lib";
 interface Props {
   my: Partial<IUser>;
   isOpen: boolean;
   dismissPanel: () => any;
-  themes: any;
   ExternalApps?: React.FC<any>;
 }
 
@@ -17,11 +16,11 @@ export const AppNavBar: React.FC<Props> = ({
   my,
   isOpen,
   dismissPanel,
-  themes,
-  ExternalApps
+  ExternalApps,
 }) => {
+  const { pathname } = useLocation()
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
-  const history = useHistory();
   const openGroup = getCurrentApp();
   function openModal() {
     setModalOpen(true);
@@ -39,25 +38,25 @@ export const AppNavBar: React.FC<Props> = ({
         url: (app.defaultRoute && `/${app.path}`) || `/${app.path}`,
         key:
           app.path === getCurrentApp()
-            ? history.location.pathname
+            ? pathname
             : `/${app.path}`,
         links:
           app.links &&
           app.links
-            .filter(l => {
-              return (
-                app.roles &&
-                app.roles.filter(r => {
-                  return (
-                    my.groups &&
-                    my.groups.filter(g => {
-                      return r.groupNames.includes(g.name);
-                    }).length > 0 &&
-                    l.roles.includes(r.name)
-                  );
-                }).length > 0
-              );
-            })
+            // .filter(l => {
+            //   return (
+            //     app.roles &&
+            //     app.roles.filter(r => {
+            //       return (
+            //         my.groups &&
+            //         my.groups.filter(g => {
+            //           return r.groupNames.includes(g.name);
+            //         }).length > 0 &&
+            //         l.roles.includes(r.name)
+            //       );
+            //     }).length > 0
+            //   );
+            // })
             .map(l => ({
               name: l.text,
               url: `/${app.path}/${l.path}`,
@@ -81,7 +80,6 @@ export const AppNavBar: React.FC<Props> = ({
             isOpen={modalOpen}
             dismissModal={dismissModal}
             settings={settings}
-            themes={themes}
           />
         </>
       )}
@@ -90,7 +88,7 @@ export const AppNavBar: React.FC<Props> = ({
 
       <h2>Applications</h2>
       <Nav
-        selectedKey={history.location.pathname}
+        selectedKey={pathname}
         groups={[
           {
             links: applications
@@ -98,7 +96,7 @@ export const AppNavBar: React.FC<Props> = ({
         ]}
         onLinkClick={(ev?: any, item?: INavLink) => {
           ev?.preventDefault();
-          item && history.push(item.url);
+          item && navigate(item.url);
           dismissPanel();
         }}
         isOnTop={false}

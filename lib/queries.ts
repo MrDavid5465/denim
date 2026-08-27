@@ -1,180 +1,180 @@
-import gql from "graphql-tag";
-const GET_APPLICATIONS = gql`
-  query getApplications {
-    getApplications {
-      id
-      name
-      path
-      defaultRoute
-      frontEnd
-      roles {
-        name
-        groupNames
-      }
-      links {
-        roles
-        path
-        text
-      }
-    }
-  }
-`;
-export interface IListApplications {
-  getApplications: Array<Partial<IApplication>>;
-}
+import gql from 'graphql-tag';
+
 export interface IApplication {
-  id: string;
   name: string;
   path: string;
   defaultRoute: string;
   frontEnd: string;
-  roles: Array<IRole>;
   links: Array<ILink>;
 }
-export interface IRole {
-  name: string;
-  groupNames: Array<string>;
-}
 export interface ILink {
-  roles: Array<string>;
   path: string;
   text: string;
 }
-const UPDATE_APPLICATION = gql`
-  mutation updateApplication($id: String!, $application: ApplicationInput!) {
-    updateApplication(id: $id, application: $application) {
+const GAMEPAD_MAPPINGS_FRAGMENT = gql`
+  fragment GamepadMappingsFields on AppSettings {
+    gamepadMappings {
       id
       name
-      path
-      defaultRoute
-      frontEnd
-      roles {
-        name
-        groupNames
-      }
+      mappingType
+      index
     }
   }
 `;
-export interface IUpdateApplication {
-  updateApplication: Partial<IApplication>;
-}
-const ADD_APPLICATION = gql`
-  mutation addApplication($application: ApplicationInput!) {
-    addApplication(application: $application) {
-      id
-    }
-  }
-`;
-export interface IAddApplication {
-  addApplication: Partial<IApplication>;
-}
-const GET_TYPIQL_ROLES = gql`
-  query getTypiQLRoles {
-    getTypiQLRoles {
-      name
-      value
-    }
-  }
-`;
-export interface IListTypiQLRoles {
-  getTypiQLRoles: Array<ITypiQLRole>;
-}
-export interface ITypiQLRole {
-  name: string;
-  value: string;
-}
-export interface IGroup {
-  sid: string;
-  sAMAccountName: string;
-  distinguishedName: string;
-  name: string;
-}
+
 const MY = gql`
   query my {
     my {
-      sid
-      sAMAccountName
-      displayName
       applications {
         path
         defaultRoute
         name
-        roles {
-          name
-          groupNames
-        }
         links {
-          roles
           path
           text
         }
         frontEnd
       }
       settings {
-        id
-        sAMAccountName
         launchPage
         theme
         fontSize
+        deviceMap
+        typiqlDataDir
+        steerMaxDeg
+        setupComplete
+        shakerDspEnabled
+        shakerLfeSourceDevice
+        shakerLfeLpfHz
+        huenicornEnabled
+        ambientTintIntensity
+        ambientPrimaryChannel
+        ambientSaturationBoost
+        ambientChannelGamma {
+          channelId
+          day
+          night
+        }
+        simdCommand
+        monocoqueCommand
+        huenicornCommand
+        simdDebugCommand
+        monocoqueDebugCommand
+        huenicornDebugCommand
+        debugBuild
+        ...GamepadMappingsFields
       }
-      groups {
-        name
-        sAMAccountName
-        distinguishedName
-        sid
+    }
+  }
+  ${GAMEPAD_MAPPINGS_FRAGMENT}
+`;
+const UPDATE_SETTINGS = gql`
+  mutation updateSettings($settings: AppSettingsInput) {
+    updateSettings(settings: $settings) {
+      settings {
+        launchPage
+        theme
+        fontSize
+        deviceMap
+        typiqlDataDir
+        steerMaxDeg
+        setupComplete
+        shakerDspEnabled
+        shakerLfeSourceDevice
+        shakerLfeLpfHz
+        huenicornEnabled
+        ambientTintIntensity
+        ambientPrimaryChannel
+        ambientSaturationBoost
+        ambientChannelGamma {
+          channelId
+          day
+          night
+        }
+        simdCommand
+        monocoqueCommand
+        huenicornCommand
+        simdDebugCommand
+        monocoqueDebugCommand
+        huenicornDebugCommand
+        debugBuild
+        ...GamepadMappingsFields
       }
     }
   }
+  ${GAMEPAD_MAPPINGS_FRAGMENT}
 `;
-const USERS = gql`
-  query users {
-    users {
-      sAMAccountName
-      displayName
-      physicalDeliveryOfficeName
-    }
-  }
-`;
-export interface IGetUsers {
-  users: Array<Partial<IUser>>;
-}
-const UPDATE_MY_USER_SETTINGS = gql`
-  mutation updateMySettings($settings: UserSettingInput!) {
-    updateMyUserSettings(settings: $settings) {
-      id
-      sAMAccountName
-      launchPage
-      theme
-      fontSize
-    }
-  }
-`;
-const GET_TYPIQL_CLIENT = gql`
-  query getTypiQLClient {
-    getTypiQLClient {
-      ip
-      computerName
-    }
-  }
-`;
-export interface IGetTypiQLClient {
-  getTypiQLClient: Partial<ITypiQLClient>;
-}
-export interface ITypiQLClient {
-  ip: string;
-  computerName: string;
-}
-export interface IUserSettingInput {
-  sAMAccountName: String;
-  launchPage: String;
-  theme: String;
-}
-export interface ISettings {
+export interface GamepadMapping {
   id: string;
-  sAMAccountName: string;
+  name: string;
+  /** "button" or "axis" */
+  mappingType: string;
+  /** Button 0–31 or axis 0–5 */
+  index: number;
+}
+
+/** One Huenicorn channel's day/night gamma pair — see ChannelGamma in
+ *  src-tauri/src/config_manager/types.rs for what the numbers mean. */
+export interface IChannelGamma {
+  channelId: number;
+  day: number;
+  night: number;
+}
+
+export interface IUserSettingInput {
   launchPage: string;
   theme: string;
   fontSize: number;
+  deviceMap: Record<string, string>;
+  typiqlDataDir?: string;
+  steerMaxDeg?: number;
+  setupComplete?: boolean;
+  gamepadMappings?: GamepadMapping[];
+  shakerDspEnabled?: boolean;
+  shakerLfeSourceDevice?: string;
+  shakerLfeLpfHz?: number;
+  huenicornEnabled?: boolean;
+  ambientTintIntensity?: number;
+  ambientPrimaryChannel?: number;
+  ambientSaturationBoost?: number;
+  ambientChannelGamma?: IChannelGamma[];
+  simdCommand?: string;
+  monocoqueCommand?: string;
+  huenicornCommand?: string;
+  /** Dev-build overrides, used instead of the commands above in a debug
+   *  build and ignored in a release build - see service_commands.rs. */
+  simdDebugCommand?: string;
+  monocoqueDebugCommand?: string;
+  huenicornDebugCommand?: string;
+}
+export interface ISettings {
+  launchPage: string;
+  theme: string;
+  fontSize: number;
+  deviceMap: Record<string, string>;
+  typiqlDataDir?: string;
+  steerMaxDeg?: number;
+  setupComplete?: boolean;
+  gamepadMappings?: GamepadMapping[];
+  shakerDspEnabled?: boolean;
+  shakerLfeSourceDevice?: string;
+  shakerLfeLpfHz?: number;
+  huenicornEnabled?: boolean;
+  ambientTintIntensity?: number;
+  ambientPrimaryChannel?: number;
+  ambientSaturationBoost?: number;
+  ambientChannelGamma?: IChannelGamma[];
+  simdCommand?: string;
+  monocoqueCommand?: string;
+  huenicornCommand?: string;
+  /** Dev-build overrides, used instead of the commands above in a debug
+   *  build and ignored in a release build - see service_commands.rs. */
+  simdDebugCommand?: string;
+  monocoqueDebugCommand?: string;
+  huenicornDebugCommand?: string;
+  /** Read-only: true when the backend serving this is a debug build, i.e.
+   *  the dev commands above are the ones actually in effect. */
+  debugBuild?: boolean;
 }
 export interface IAppNav {
   text: string;
@@ -183,11 +183,7 @@ export interface IAppNav {
 }
 
 export interface IUser {
-  sid: string;
-  sAMAccountName: string;
-  displayName: string;
   applications: Array<IApplication>;
-  groups: Array<IGroup>;
   settings: Partial<ISettings>;
 }
 
@@ -225,15 +221,9 @@ const GET_FILE = gql`
 
 const dispatcher = {
   my: MY,
-  getUsers: USERS,
-  updateMyUserSettings: UPDATE_MY_USER_SETTINGS,
-  listApplications: GET_APPLICATIONS,
-  listTypiqlRoles: GET_TYPIQL_ROLES,
-  addApplication: ADD_APPLICATION,
-  updateApplication: UPDATE_APPLICATION,
+  updateSettings: UPDATE_SETTINGS,
   getFile: GET_FILE,
-  upload: UPLOAD,
-  getTypiQLClient: GET_TYPIQL_CLIENT,
+  upload: UPLOAD
 };
 
 export default dispatcher;

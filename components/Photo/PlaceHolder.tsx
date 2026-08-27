@@ -45,7 +45,7 @@ const PlaceHolder: React.FC<Props> = ({
       <Dropzone
         multiple={false}
         maxSize={500000}
-        accept={'image/jpeg,image/png'}
+        accept={{ 'image/jpeg': [], 'image/png': [] }}
         onDrop={methods.select}
       >
         {({ getRootProps, getInputProps }) => {
