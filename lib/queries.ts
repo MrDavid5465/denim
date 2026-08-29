@@ -11,17 +11,14 @@ export interface ILink {
   path: string;
   text: string;
 }
-const GAMEPAD_MAPPINGS_FRAGMENT = gql`
-  fragment GamepadMappingsFields on AppSettings {
-    gamepadMappings {
-      id
-      name
-      mappingType
-      index
-    }
-  }
-`;
-
+// `my.settings` (backend: a real `UserSetting` typiql type, see
+// backend/src/user_settings.rs) is deliberately not selected here — this
+// app's live Denim chrome reads/writes theme settings via browser
+// localStorage instead (see `lib/localSettings.ts`), since a single
+// backend-shared settings record would leak across every anonymous visitor
+// with no auth yet to scope it by. The backend piece exists ready for when
+// JWT auth lands and a real per-account settings mutation becomes
+// meaningful — this app just doesn't call it yet.
 const MY = gql`
   query my {
     my {
@@ -35,147 +32,9 @@ const MY = gql`
         }
         frontEnd
       }
-      settings {
-        launchPage
-        theme
-        fontSize
-        deviceMap
-        typiqlDataDir
-        steerMaxDeg
-        setupComplete
-        shakerDspEnabled
-        shakerLfeSourceDevice
-        shakerLfeLpfHz
-        huenicornEnabled
-        ambientTintIntensity
-        ambientPrimaryChannel
-        ambientSaturationBoost
-        ambientChannelGamma {
-          channelId
-          day
-          night
-        }
-        simdCommand
-        monocoqueCommand
-        huenicornCommand
-        simdDebugCommand
-        monocoqueDebugCommand
-        huenicornDebugCommand
-        debugBuild
-        ...GamepadMappingsFields
-      }
     }
   }
-  ${GAMEPAD_MAPPINGS_FRAGMENT}
 `;
-const UPDATE_SETTINGS = gql`
-  mutation updateSettings($settings: AppSettingsInput) {
-    updateSettings(settings: $settings) {
-      settings {
-        launchPage
-        theme
-        fontSize
-        deviceMap
-        typiqlDataDir
-        steerMaxDeg
-        setupComplete
-        shakerDspEnabled
-        shakerLfeSourceDevice
-        shakerLfeLpfHz
-        huenicornEnabled
-        ambientTintIntensity
-        ambientPrimaryChannel
-        ambientSaturationBoost
-        ambientChannelGamma {
-          channelId
-          day
-          night
-        }
-        simdCommand
-        monocoqueCommand
-        huenicornCommand
-        simdDebugCommand
-        monocoqueDebugCommand
-        huenicornDebugCommand
-        debugBuild
-        ...GamepadMappingsFields
-      }
-    }
-  }
-  ${GAMEPAD_MAPPINGS_FRAGMENT}
-`;
-export interface GamepadMapping {
-  id: string;
-  name: string;
-  /** "button" or "axis" */
-  mappingType: string;
-  /** Button 0–31 or axis 0–5 */
-  index: number;
-}
-
-/** One Huenicorn channel's day/night gamma pair — see ChannelGamma in
- *  src-tauri/src/config_manager/types.rs for what the numbers mean. */
-export interface IChannelGamma {
-  channelId: number;
-  day: number;
-  night: number;
-}
-
-export interface IUserSettingInput {
-  launchPage: string;
-  theme: string;
-  fontSize: number;
-  deviceMap: Record<string, string>;
-  typiqlDataDir?: string;
-  steerMaxDeg?: number;
-  setupComplete?: boolean;
-  gamepadMappings?: GamepadMapping[];
-  shakerDspEnabled?: boolean;
-  shakerLfeSourceDevice?: string;
-  shakerLfeLpfHz?: number;
-  huenicornEnabled?: boolean;
-  ambientTintIntensity?: number;
-  ambientPrimaryChannel?: number;
-  ambientSaturationBoost?: number;
-  ambientChannelGamma?: IChannelGamma[];
-  simdCommand?: string;
-  monocoqueCommand?: string;
-  huenicornCommand?: string;
-  /** Dev-build overrides, used instead of the commands above in a debug
-   *  build and ignored in a release build - see service_commands.rs. */
-  simdDebugCommand?: string;
-  monocoqueDebugCommand?: string;
-  huenicornDebugCommand?: string;
-}
-export interface ISettings {
-  launchPage: string;
-  theme: string;
-  fontSize: number;
-  deviceMap: Record<string, string>;
-  typiqlDataDir?: string;
-  steerMaxDeg?: number;
-  setupComplete?: boolean;
-  gamepadMappings?: GamepadMapping[];
-  shakerDspEnabled?: boolean;
-  shakerLfeSourceDevice?: string;
-  shakerLfeLpfHz?: number;
-  huenicornEnabled?: boolean;
-  ambientTintIntensity?: number;
-  ambientPrimaryChannel?: number;
-  ambientSaturationBoost?: number;
-  ambientChannelGamma?: IChannelGamma[];
-  simdCommand?: string;
-  monocoqueCommand?: string;
-  huenicornCommand?: string;
-  /** Dev-build overrides, used instead of the commands above in a debug
-   *  build and ignored in a release build - see service_commands.rs. */
-  simdDebugCommand?: string;
-  monocoqueDebugCommand?: string;
-  huenicornDebugCommand?: string;
-  /** Read-only: true when the backend serving this is a debug build, i.e.
-   *  the dev commands above are the ones actually in effect. */
-  debugBuild?: boolean;
-}
 export interface IAppNav {
   text: string;
   path: string;
@@ -184,7 +43,6 @@ export interface IAppNav {
 
 export interface IUser {
   applications: Array<IApplication>;
-  settings: Partial<ISettings>;
 }
 
 export interface IMy {
@@ -221,7 +79,6 @@ const GET_FILE = gql`
 
 const dispatcher = {
   my: MY,
-  updateSettings: UPDATE_SETTINGS,
   getFile: GET_FILE,
   upload: UPLOAD
 };

@@ -1,34 +1,11 @@
 import { IForm } from '../../../../per-form';
-import { getAppId } from '../../../../../graphql/client';
 import { COLOR_KEYS, COLOR_LABELS, MODE_KEYS, MODE_LABELS } from '../../../../themes';
 
-export const userSettings = (deviceMap?: Record<string, string>) => {
-  const appId = getAppId();
-
-  const existingNames = Object.values(deviceMap ?? {})
-    .filter((name, i, arr) => arr.indexOf(name) === i)
-    .map(name => ({ text: name, value: name }));
-
+export const userSettings = () => {
   return {
-    deviceMap: {
-      type: 'combobox',
-      label: 'Device Name',
-      placeholder: 'Enter or select a name for this device',
-      options: existingNames,
-      converter: (_key: string, values: IForm) => {
-        const newName = values['deviceMap'];
-        return { ...(deviceMap ?? {}), [appId]: newName };
-      },
-    },
-    typiqlDataDir: {
-      type: 'text',
-      label: 'Config directory',
-      placeholder: '~/.config/dashboard-designer',
-      required: false,
-    },
     launchPage: {
       type: 'text',
-      label: 'Launch Page',
+      label: 'Default page',
       required: false,
     },
     themeColor: {

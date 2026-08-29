@@ -12,9 +12,12 @@ import {
 import { AppNavBar } from "./AppNavBar";
 import { NavBar } from "./NavBar";
 import { IApplication } from "../../lib/queries";
+import { ILocalSettings } from "../../lib/localSettings";
 
 interface Props {
   my: any;
+  settings: ILocalSettings;
+  onSettingsChange: (next: ILocalSettings) => void;
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
   ExternalApps?: React.FC<any>;
@@ -22,6 +25,8 @@ interface Props {
 
 export const Header: React.FC<Props> = ({
   my,
+  settings,
+  onSettingsChange,
   Brand,
   Controls,
   ExternalApps
@@ -101,6 +106,8 @@ export const Header: React.FC<Props> = ({
           isOpen={isOpen}
           dismissPanel={dismissPanel}
           my={my}
+          settings={settings}
+          onSettingsChange={onSettingsChange}
           ExternalApps={ExternalApps}
         />
         <NavBar my={my} Controls={Controls} className={style.navBar} />

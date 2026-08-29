@@ -1,6 +1,7 @@
 import React from "react";
 // import '../App.scss';
 import "@fluentui/react";
+import { useLocation } from "react-router-dom";
 import {
   Fabric,
   getStyle,
@@ -17,28 +18,7 @@ import { IMy } from "../lib/queries";
 import dispatcher from "../lib/queries";
 import IconSVG, { IconProps } from "../logo";
 import { useHealthPoll } from "../../../graphql/health";
-
-const THEME_CACHE_KEY = 'denim-theme';
-
-function readThemeCache(): { theme: string; fontSize: number } | null {
-  try {
-    const raw = localStorage.getItem(THEME_CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeThemeCache(settings: { theme?: string; fontSize?: number }) {
-  try {
-    if (settings.theme) {
-      localStorage.setItem(THEME_CACHE_KEY, JSON.stringify({
-        theme: settings.theme,
-        fontSize: settings.fontSize ?? 1,
-      }));
-    }
-  } catch {}
-}
+import { ILocalSettings, readLocalSettings, writeLocalSettings } from "../lib/localSettings";
 
 // Keeps the browser tab favicon in sync with the user's selected theme
 // color. Rendered as a data URI rather than reusing /logo.svg because the
@@ -94,7 +74,17 @@ const App: React.FC<Props> = ({
   const myResult: any = useQuery(dispatcher.my);
   const { loading, data } : { loading?: boolean, data?: IMy } = myResult;
   const refetch: () => void = myResult.refetch;
-  const settings = (data && data.my && data.my.settings) || {};
+  const location = useLocation();
+
+  // Per-visitor chrome settings (theme, font size, launch page) live in
+  // browser localStorage, not the `my` query — this is a public site with
+  // anonymous visitors, so a backend-shared settings record would leak one
+  // visitor's choice to everyone else (see `lib/localSettings.ts`).
+  const [settings, setSettings] = React.useState<ILocalSettings>(() => readLocalSettings());
+  const handleSettingsChange = React.useCallback((next: ILocalSettings) => {
+    writeLocalSettings(next);
+    setSettings(next);
+  }, []);
 
   // Covers two related startup/reconnect races: the native app's frontend
   // webview loading before the Tauri-managed backend has finished starting
@@ -134,30 +124,55 @@ const App: React.FC<Props> = ({
   // this specific bug (the same render that reads getTheme() is the one after
   // loadTheme ran) but trips React's "cannot update a component while
   // rendering a different component" warning once settings actually change
-  // live, without a page reload in between (see Settings/index.tsx's
-  // updateSettings refetchQueries — before that fix, every theme change
-  // required a full reload, so loadTheme only ever ran once per fresh mount
-  // and neither this staleness bug nor that warning had a chance to surface).
+  // live, without a page reload in between. Settings now come from
+  // localStorage rather than a network round-trip, so this effect no longer
+  // needs to branch on the `my` query's loading state — it's simpler than
+  // before, not just relocated.
   React.useLayoutEffect(() => {
-    if (loading || !data) {
-      setTheme(readThemeCache() ?? { theme: "default", fontSize: 1 }, themes);
-    } else {
-      writeThemeCache(settings);
-      setTheme(settings, themes);
-    }
+    setTheme(settings, themes);
     forceRerender();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, data, settings.theme, settings.fontSize]);
+  }, [settings.theme, settings.fontSize]);
 
   if (loading || !data) {
-    return <Splashscreen Icon={Logo} statusText={stuckOnSplash ? 'Waiting for server…' : undefined} />;
+    // A `RootComponent` (this app's `Home`) stands in for the generic
+    // splash screen while `my` is loading or unreachable — it's built to
+    // render real content (see its own doc comment) without needing the
+    // backend at all, so visitors see the actual homepage from the first
+    // paint rather than a spinner, and it's still what shows if the backend
+    // never comes up. Denim consumers with no `RootComponent` (e.g.
+    // typiql-tauri's desktop app, which has nothing meaningful to show
+    // before `my` resolves) keep the plain spinner.
+    return RootComponent ? (
+      // Same Fabric wrapper as the main render path below — without it the
+      // theme (dark background etc.) never applies, since that's what
+      // `applyTo="body"` actually does; RootComponent would otherwise
+      // render against the browser's plain unthemed default.
+      <Fabric key={`${settings.theme}${settings.fontSize}`} applyTo="body">
+        <RootComponent />
+      </Fabric>
+    ) : (
+      <Splashscreen Icon={Logo} statusText={stuckOnSplash ? 'Waiting for server…' : undefined} />
+    );
   }
   const style = getStyle();
+
+  // The homepage renders as `RootComponent` (see App.tsx) whenever no
+  // registered application's path is active — that's also exactly the
+  // "landing page, not a chrome-driven app" case, so it hides the header
+  // rather than showing it above a page that was never designed to sit
+  // under one. Any real app path (e.g. "/projects") still gets the header.
+  // `RootComponent`-less Denim consumers (e.g. typiql-tauri's desktop app)
+  // are unaffected — this only fires when a caller actually passes one.
+  const currentSegment = location.pathname.split("/")[1] || "";
+  const applications = (data.my && data.my.applications) || [];
+  const isRegisteredApp = applications.some((app: any) => app.path === currentSegment);
+  const isKiosk = currentSegment === "kiosk";
+  const showHeader = !isKiosk && (isRegisteredApp || !RootComponent);
+
   return (
     <Fabric
-      key={`${data && data.my && data.my.settings && data.my.settings.theme}${
-        data?.my?.settings?.fontSize
-      }`}
+      key={`${settings.theme}${settings.fontSize}`}
       applyTo="body"
     >
       <Routes>
@@ -165,18 +180,24 @@ const App: React.FC<Props> = ({
           path={"kiosk/*"}
           element={
               <></>
-            
+
           }
         />
         <Route
           path={"*"}
           element={
-            <Header
-              my={data && data.my}
-              Brand={Brand}
-              Controls={Controls}
-              ExternalApps={ExternalApps}
-            />
+            showHeader ? (
+              <Header
+                my={data && data.my}
+                settings={settings}
+                onSettingsChange={handleSettingsChange}
+                Brand={Brand}
+                Controls={Controls}
+                ExternalApps={ExternalApps}
+              />
+            ) : (
+              <></>
+            )
           }
         />
       </Routes>
@@ -185,16 +206,13 @@ const App: React.FC<Props> = ({
           path={"*"}
           //exact
           element={
-            <Stack className={style.content}>
+            <Stack className={style.content} style={!showHeader ? { top: "0em" } : undefined}>
               {RootComponent ? (
                 <>
                   <RootComponent />
                 </>
-              ) : data &&
-                data.my &&
-                data.my.settings &&
-                data.my.settings.launchPage ? (
-                <Navigate to={`/${data.my.settings.launchPage}`} />
+              ) : settings.launchPage ? (
+                <Navigate to={`/${settings.launchPage}`} />
               ) : (
                 <Stack>
                   <h1>Welcome, Click the waffle icon to begin!</h1>

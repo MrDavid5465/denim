@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Panel, PanelType, Nav, DefaultButton } from "./lib";
-import { IUser, ISettings } from "../../lib/queries";
+import { IUser } from "../../lib/queries";
+import { ILocalSettings } from "../../lib/localSettings";
 import Settings from "./Settings";
 import { INavLink } from "@fluentui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCurrentApp } from "../../lib";
 interface Props {
   my: Partial<IUser>;
+  settings: ILocalSettings;
+  onSettingsChange: (next: ILocalSettings) => void;
   isOpen: boolean;
   dismissPanel: () => any;
   ExternalApps?: React.FC<any>;
@@ -14,6 +17,8 @@ interface Props {
 
 export const AppNavBar: React.FC<Props> = ({
   my,
+  settings,
+  onSettingsChange,
   isOpen,
   dismissPanel,
   ExternalApps,
@@ -64,7 +69,6 @@ export const AppNavBar: React.FC<Props> = ({
             }))
       }))
     : [{ name: "Loading...", url: "", key: "loading", disabled: true }];
-  const settings: Partial<ISettings> = my.settings ? my.settings : {};
   return (
     <Panel
       isLightDismiss
@@ -80,6 +84,7 @@ export const AppNavBar: React.FC<Props> = ({
             isOpen={modalOpen}
             dismissModal={dismissModal}
             settings={settings}
+            onSave={onSettingsChange}
           />
         </>
       )}
