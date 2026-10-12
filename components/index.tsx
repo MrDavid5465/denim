@@ -32,7 +32,7 @@ const FAVICON_SVG = (color: string) =>
   `<circle cx="40" cy="45" r="3" fill="${color}"/>` +
   `</svg>`;
 
-function setFaviconColor(color: string) {
+function setFaviconColor(color: string, favicon: (color: string) => string = FAVICON_SVG) {
   let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
   if (!link) {
     link = document.createElement("link");
@@ -40,16 +40,16 @@ function setFaviconColor(color: string) {
     document.head.appendChild(link);
   }
   link.type = "image/svg+xml";
-  link.href = `data:image/svg+xml,${encodeURIComponent(FAVICON_SVG(color))}`;
+  link.href = `data:image/svg+xml,${encodeURIComponent(favicon(color))}`;
 }
 
-export const setTheme = (theme: any, themes: any) => {
+export const setTheme = (theme: any, themes: any, favicon?: (color: string) => string) => {
   const key = (theme && theme.theme) || "default";
   const build = themes[key] || themes.default;
   const builtTheme = build(theme.fontSize || 1);
   loadTheme(builtTheme);
   if (builtTheme?.palette?.themePrimary) {
-    setFaviconColor(builtTheme.palette.themePrimary);
+    setFaviconColor(builtTheme.palette.themePrimary, favicon);
   }
 };
 
@@ -58,6 +58,9 @@ interface Props {
   RootComponent?: any;
   themes: any;
   Logo?: React.FC<IconProps>;
+  // Builds the tab favicon SVG from the active theme's primary color —
+  // override for apps that aren't monocoque-builder (defaults to its gauge).
+  favicon?: (color: string) => string;
   Brand?: React.FC<any>;
   Controls?: React.FC<any>;
   ExternalApps?: React.FC<any>;
@@ -66,6 +69,7 @@ const App: React.FC<Props> = ({
   components = {},
   themes,
   Logo = IconSVG,
+  favicon,
   Brand,
   RootComponent,
   Controls,
@@ -129,7 +133,7 @@ const App: React.FC<Props> = ({
   // needs to branch on the `my` query's loading state — it's simpler than
   // before, not just relocated.
   React.useLayoutEffect(() => {
-    setTheme(settings, themes);
+    setTheme(settings, themes, favicon);
     forceRerender();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.theme, settings.fontSize]);
