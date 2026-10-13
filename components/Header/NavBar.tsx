@@ -22,6 +22,15 @@ interface Props {
   className: string;
 }
 
+// A link is active on its own page and the pages under it, matched by whole
+// path segments: "check" must not light up on "checks". A link to the app
+// root ("") is active only on the root itself, or it would match every page.
+const isLinkActive = (pathname: string, appPath: string, linkPath: string) => {
+  const base = `/${appPath}${linkPath ? `/${linkPath}` : ""}`.replace(/\/+$/, "");
+  const path = pathname.replace(/\/+$/, "");
+  return linkPath ? path === base || path.startsWith(`${base}/`) : path === base;
+};
+
 export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -63,9 +72,7 @@ export const NavBar: React.FC<Props> = ({ my, Controls, className }) => {
                             <HeaderLink
                               key={l.path}
                               to={`/${app.path}/${l.path}`}
-                              active={pathname.startsWith(
-                                `/${app.path}/${l.path}`
-                              )}
+                              active={isLinkActive(pathname, app.path, l.path)}
                             >
                               {l.text}
                             </HeaderLink>
