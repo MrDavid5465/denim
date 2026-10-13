@@ -1,5 +1,5 @@
 import { IForm } from '../../../../per-form';
-import { COLOR_KEYS, COLOR_LABELS, MODE_KEYS, MODE_LABELS } from '../../../../themes';
+import { COLOR_KEYS, COLOR_LABELS, MODE_KEYS, MODE_LABELS } from '../../../themes';
 
 export const userSettings = () => {
   return {
