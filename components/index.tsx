@@ -21,6 +21,22 @@ import { useHealthPoll } from "../lib/health";
 import { IDenimSettings, readLocalSettings, writeLocalSettings } from "../lib/localSettings";
 import { ISettingsTab } from "../lib/settingsExtensions";
 import { THEMES } from "../themes";
+import { mergeStyles } from "@fluentui/react";
+
+// The shell is meant to fill the page, but browsers give <body> an 8px
+// margin by default, which leaves a gap around the header. Every app that
+// used denim had to add its own reset; doing it here, once, makes it
+// work out of the box. Apps can still override it with their own CSS.
+mergeStyles({
+  selectors: {
+    ":global(html), :global(body), :global(#root)": {
+      margin: 0,
+      padding: 0,
+      width: "100%",
+      minHeight: "100%",
+    },
+  },
+});
 
 // Keeps the browser tab favicon in sync with the user's selected theme
 // color. Rendered as a data URI rather than reusing /logo.svg because the
