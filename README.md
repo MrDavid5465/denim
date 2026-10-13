@@ -61,14 +61,14 @@ your-app/src/lib/per-form/
 
 Get them from:
 
-- https://github.com/MrDavid5465/denim
+- file:///var/mnt/Media/david-source/repos/typiql-standins/denim
 - file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin
 - file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin-fabric
 - file:///var/mnt/Media/david-source/repos/typiql-standins/per-form
 
 ```sh
 cd your-app/src/lib
-git clone https://github.com/MrDavid5465/denim
+git clone file:///var/mnt/Media/david-source/repos/typiql-standins/denim
 git clone file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin
 git clone file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin-fabric
 git clone file:///var/mnt/Media/david-source/repos/typiql-standins/per-form
