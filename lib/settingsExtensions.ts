@@ -1,7 +1,9 @@
 import type React from 'react';
 import type { IDenimSettings } from './localSettings';
 
-// The extension point of Denim's Settings modal (waffle -> Settings).
+// The extension point of the Settings dialog (TopBarShell: waffle ->
+// Settings; SidebarShell: the sidebar footer). Data only: a skin renders it
+// through useSettingsForm() (settingsForm.ts).
 //
 // Denim owns the General tab (theme colour, mode, font size, launch page).
 // An app adds its own global preferences in two ways:
@@ -36,7 +38,7 @@ export interface ISettingsTabProps {
   /**
    * Register a callback that runs after the settings themselves are saved.
    * Re-register whenever the state it closes over changes (in an effect).
-   * Fluent's Pivot unmounts inactive tabs; the last registered callback is
+   * A skin's tab control may unmount inactive tabs (Fluent's Pivot does); the last registered callback is
    * kept and still runs, as is the last patch.
    */
   registerSave: (save: (() => void | Promise<void>) | undefined) => void;

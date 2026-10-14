@@ -1,94 +1,104 @@
 ---
 name: denim-app-shell
-description: How to build a React app's shell with Denim (the app skeleton that sits on typical-admin-fabric, per-form and a typiql backend) - registering applications and their nav links, routes and deep links, theming (12 colours x light/dark/high-contrast, font size), the Settings modal and its extension point (settingsTabs, settingsGeneralFields, settingsFields), local vs server settings and the optional `my`/`updateSettings` server contract, the Photo/cropper component, quick-entry UX for data-entry apps, plain-http LAN pitfalls, and when to hand-roll instead. Use before creating a new app on this stack, adding an app/page to the nav, adding a setting, or touching the header, waffle menu, theme or Settings modal.
+description: How to build a React app's shell on Denim's headless core (denim) - the provider and hooks (DenimProvider, useDenim, useApplications, useNav, useSettings, useSettingsForm), registering applications with groups, icons and nav links, routes, kiosk routes and deep links, local vs server settings and the Settings extension point (settingsTabs, settingsGeneralFields, settingsFields), status dots, the optional `my`/`updateSettings` server contract, the contract a skin implements, and plain-http LAN pitfalls. Use before creating a new app on this stack, adding an app/page to the nav, adding a setting, writing or changing a skin, or touching routing, settings or the server contract. For the Fluent shells themselves (TopBarShell, SidebarShell, MasterDetail, theming, Photo) read denim-fabric's denim-fabric-shells skill too.
 license: MIT
 ---
 
-# Building an app shell with Denim
+# Building an app shell on Denim
 
-Denim renders the whole frame of an app: a fixed header with the current
-app's name and sub-page links, a waffle (app switcher) panel listing every
-application, a Settings modal, Fluent theming applied to `<body>`, a splash
-screen while the backend answers, and one route per application. Your code
-supplies the applications' components; CRUD screens inside them are
-ReactiveAdmin (read `typical-admin-fabric/.claude/skills/reactive-admin`).
+Denim is split in two, the way typical-admin / typical-admin-fabric are:
 
-Folder layout is fixed: Denim imports its siblings by relative path, so clone
-`denim`, `typical-admin`, `typical-admin-fabric` and `per-form` side by side
-(e.g. `src/lib/denim`, `src/lib/typical-admin-fabric`, ...). See the README
-for peer packages and the full minimal app.
+- **denim** (the core, this repo): headless. It owns the application
+  registry, routing, the nav model, the settings store, health polling and
+  status dots, and hands them out through a provider and hooks. No UI kit.
+- **a skin** renders it. **denim-fabric** is the Fluent UI one ("Fabric" is
+  Fluent's old name) with two layouts: `TopBarShell` (header + waffle panel,
+  the original look) and `SidebarShell` (grouped sidebar, master-detail).
+  You can write your own (section 7).
+
+Apps normally import everything from the skin (`./lib/denim-fabric`
+re-exports the core). Use the core directly for hooks in your own
+components and when writing a skin.
+
+Folder layout is fixed: the libraries import each other by relative path,
+so clone `denim`, `denim-fabric`, `typical-admin`, `typical-admin-fabric`
+and `per-form` side by side (e.g. `src/lib/denim`, `src/lib/denim-fabric`,
+...). See the READMEs for peer packages and full setups.
 
 ## 1. Mount it
 
 ```tsx
-// main.tsx: providers. Denim reads Apollo from <ApolloProvider>; it never
-// imports your client.
+// main.tsx: providers. The core reads Apollo from <ApolloProvider> and the
+// location from the router; it never imports your client.
 <ApolloProvider client={client}>
   <MergedSubscriptionProvider>        {/* typical-admin: one subscription connection */}
     <BrowserRouter>
       <App />
-      <ConfirmDialogHost />           {/* typical-admin-fabric/ConfirmDialog */}
+      <ConfirmDialogHost />           {/* from denim-fabric (= typical-admin-fabric's) */}
     </BrowserRouter>
   </MergedSubscriptionProvider>
 </ApolloProvider>
 
-// App.tsx
-import Denim from './lib/denim';
+// App.tsx: a shell is the whole frame. Every shell takes all
+// <DenimProvider> props plus its own.
+import { SidebarShell } from './lib/denim-fabric';
 export default function App() {
-  return <Denim components={{ projects: ProjectsApp, tasks: TasksApp }} />;
+  return <SidebarShell title="Rig Config" components={{ devices: DevicesAdmin, designer: LayoutDesigner }} />;
 }
 ```
 
-- Don't wrap Denim in your own `ThemeProvider` or call `loadTheme`; Denim
-  owns the theme (section 4). Importing Denim also calls Fluent's
-  `initializeIcons()`, so don't call it again.
-- Use `BrowserRouter`. Denim's `getCurrentApp()` reads
-  `document.location.pathname`, so under `HashRouter` the waffle panel
-  doesn't expand the current app.
-- Denim can be the element of a `<Route path="/*">` or rendered directly
-  under the router; both work.
+- Don't wrap a Fluent shell in your own `ThemeProvider` or call `loadTheme`
+  or `initializeIcons()`; the shell does.
+- A shell can be the element of a `<Route path="/*">` or rendered directly
+  under the router. `BrowserRouter` and `HashRouter` both work (the nav
+  model reads the router's location).
 
 ## 2. Register applications (nav + routes)
 
-An **application** is one entry in the waffle panel and one top-level route:
+An **application** is one entry in the nav and one top-level route:
 
 ```ts
 interface IApplication {
-  name: string;          // label in the waffle panel and the header
+  name: string;          // label in the nav
   path: string;          // URL segment: the app owns /<path>/*
   defaultRoute: string;  // /<path> redirects to /<path>/<defaultRoute>; "" for none
-  frontEnd: string;      // key into <Denim components={{ ... }}>
+  frontEnd: string;      // key into the shell's components={{ ... }}
   links: { path: string; text: string }[];  // sub-pages, /<path>/<link.path>
+  group?: string | null; // optional nav heading ("RIG"); none -> defaultGroup
+  icon?: string | null;  // optional icon name (denim-fabric: a Fluent icon name)
 }
 ```
 
 Two sources, pick one:
 
-- **Static** (`<Denim applications={[...]} />`): the list lives in the
-  frontend. No backend contract needed. Best for a single-purpose app.
-- **Backend** (omit `applications`): Denim queries `my { applications {...} }`.
-  Use it when the list differs per user/role or is edited at runtime (e.g. an
-  `Application` typiql type, see the README's server contract).
+- **Static** (`applications={[...]}`): the list lives in the frontend. No
+  backend contract needed. Best for a single-purpose app.
+- **Backend** (omit `applications`): the core queries
+  `my { applications {...} }`. Use it when the list differs per user/role or
+  is edited at runtime. `group`/`icon` are selected only when
+  `applicationFields` names them (`"group icon"`; SidebarShell's default).
 
-Either way, adding a page takes **both** a link entry and a route in the
-component that renders it; one without the other is unreachable or a dead
-link.
+Groups keep configured order: a group appears where its first application
+appears, applications keep their order inside it, and ungrouped ones go
+under `defaultGroup` (default "Applications"). Skins without groups (the
+TopBarShell) ignore `group`/`icon`.
 
-What Denim renders for each application:
+Adding a page takes **both** a link entry and a route in the component that
+renders it; one without the other is unreachable or a dead link.
+
+What the core routes (`<DenimRoutes>`):
 
 | URL | Renders |
 |---|---|
-| `/<path>/*` | header + `components[frontEnd]` with prop `{ app }`, below the fixed header |
+| `/<path>/*` | `components[frontEnd]` with prop `{ app }`, inside the skin's chrome |
 | `/<path>` exactly, with `defaultRoute` | `<Navigate replace>` to `/<path>/<defaultRoute>` (deep links below are left alone) |
-| `/kiosk/<path>/*` | the same component with no header (wall displays, embeds) |
-| `/` | `RootComponent` if given, else a redirect to the `launchPage` setting, else "Welcome" text |
+| `/kiosk/<path>/*` | the same component with no chrome (wall displays, embeds) |
+| `/` | `RootComponent` if given, else a redirect to the `launchPage` setting, else a welcome. (SidebarShell on a phone shows its menu here instead.) |
 | anything else | the `/` content; there is no 404 route |
 
 The component nests its own routes **relative** to `/<path>`:
 
 ```tsx
-// Registered as { name: 'Projects', path: 'projects', frontEnd: 'projects',
-//   defaultRoute: '', links: [{ path: 'board', text: 'Board' }] }
 export default function ProjectsApp() {
   return (
     <Routes>
@@ -100,15 +110,21 @@ export default function ProjectsApp() {
 }
 ```
 
-`RootComponent` (e.g. a public site's homepage) also stands in for the splash
-screen while `my` loads, and the header is hidden on any path that isn't a
-registered application, so a landing page doesn't sit under app chrome.
+`RootComponent` (a public site's homepage) also stands in for the splash
+while `my` loads, and chrome is hidden on any path that isn't an application
+(`useNav().showChrome`).
 
-Other props: `Logo` (splash screen), `Brand` (icon next to the waffle),
-`Controls` (right side of the header; also replaces the narrow-screen menu
-button), `ExternalApps` (extra content at the top of the waffle panel).
+## 3. The nav model
 
-## 3. Settings: where they live
+`useNav()` gives `activeApp` (by the first path segment, or the second under
+`/kiosk`), `activeLink` (the most specific active link), `isKiosk`,
+`showChrome`, and `appUrl`, `linkUrl`, `isAppActive`, `isLinkActive`.
+Matching is by **whole segments**: link `check` is not active on `checks`,
+and a link to the app root (`""`) is active only on the root itself. The
+same functions are exported pure (`computeNav`, `isLinkActive`,
+`groupApplications`) for tests and non-React code.
+
+## 4. Settings: where they live
 
 Denim's own settings are `theme` (`"<mode>-<color>"`, e.g. `dark-teal`),
 `fontSize` (1, 1.14, 1.29) and `launchPage`. `settingsSource` decides where:
@@ -120,37 +136,20 @@ Denim's own settings are `theme` (`"<mode>-<color>"`, e.g. `dark-teal`),
 | Right for | public sites (anonymous visitors), single-user tools, prototypes | settings shared by every device of an installation or account |
 
 `defaultSettings={{ theme: 'light-blue', launchPage: 'projects' }}` sets the
-values before anything is saved.
+values before anything is saved. `useSettings().saveSettings(values)` merges
+and persists from anywhere.
 
-The Settings modal is for **global, cross-cutting preferences** (theme, units,
-this device's name). A feature's own configuration, however small, gets its
-own application or page instead of a Settings tab.
+The Settings dialog is for **global, cross-cutting preferences** (theme,
+units, this device's name). A feature's own configuration, however small,
+belongs in its own application or page, not a Settings tab.
 
-## 4. Theming
+## 5. Extending the Settings dialog
 
-- `<Denim>` loads the theme for the current `theme`/`fontSize` with Fluent's
-  `loadTheme` and applies it to `<body>`; the favicon follows the theme
-  colour. The default `themes` prop is Denim's `THEMES`: 12 colours x
-  `light`/`dark`/`hc`, plus `default` (= `dark-red`).
-- In your components read colours from the theme, never hard-code them:
-  `getTheme().palette.themePrimary`, `.neutralLight`, `.white` (the page
-  background, dark in dark mode), `theme.semanticColors.*`. Inside Fluent
-  components prefer `useTheme()`. See `hand-rolled-components`.
-- A custom `themes` map must keep the `<mode>-<color>` keys (`themeKey()`,
-  `parseThemeKey()`, `COLOR_KEYS`, `MODE_KEYS` are exported), because the
-  Settings modal's Colour/Theme pickers build the key that way. Each value is
-  `(fontSize: number) => IPartialTheme`; Denim's `buildTheme(mode, color)`
-  shows the shape.
-- `getStyle()` returns Denim's shared class names (`content`, `modalHeader`,
-  `modalBody`, ...) for the current theme.
-
-## 5. Extending the Settings modal
-
-Denim owns the General tab. An app adds to it in three ways:
+The core owns the General tab. An app adds to it in three ways:
 
 ```tsx
-import Denim, { ISettingsTab, ISettingsTabProps } from './lib/denim';
-import { Form } from './lib/denim/lib';      // typical-admin-fabric's per-form Form
+import type { ISettingsTab, ISettingsTabProps } from './lib/denim-fabric';
+import { Form } from './lib/denim-fabric/lib';   // typical-admin-fabric's per-form Form
 
 // (a) Extra fields on the General tab: a per-form schema (see form-schema).
 const generalFields = {
@@ -166,113 +165,94 @@ function DeviceTab({ settings, onChange, registerSave }: ISettingsTabProps) {
     onChange({ deviceName: name }, name.length <= 40, 'Device name: 40 characters at most.');
     // Optional: side effects after the settings are saved (your own mutations).
     registerSave(async () => { /* e.g. await renameDevice({ variables: { name } }) */ });
-  }, [name]);
+  }, [name, onChange, registerSave]);
   return (
     <Form name="device" form={{ deviceName: { type: 'text', label: 'Device name' } }}
-          initialValues={{ deviceName: name }}
-          onChange={(_n: string, { clean }: any) => setName(clean.deviceName)} />
+          initialValues={{ deviceName: settings.deviceName ?? '' }}
+          onChange={(_n: string, { clean }: any) => setName(clean.deviceName ?? '')} />
   );
 }
 const settingsTabs: ISettingsTab[] = [{ key: 'device', headerText: 'Device', Component: DeviceTab }];
 
 // (c) settingsFields: with settingsSource="server", the extra AppSettings
 // fields to select in my.settings so tabs can read them.
-<Denim settingsSource="server" settingsFields="units deviceName"
-       settingsGeneralFields={generalFields} settingsTabs={settingsTabs} ... />
+<TopBarShell settingsSource="server" settingsFields="units deviceName"
+             settingsGeneralFields={generalFields} settingsTabs={settingsTabs} ... />
 ```
 
-How saving works:
+How saving works (`useSettingsForm`, the same in every skin):
 
 - Save merges General's values and every tab's latest `onChange` patch into
-  one object. Local: written to `localStorage` (extra keys included). Server:
-  sent as `updateSettings(settings: {...})`, then `my` is refetched; every key
-  must therefore exist on the backend's `AppSettingsInput`.
+  one object. Local: written to `localStorage` (extra keys included).
+  Server: sent as `updateSettings(settings: {...})`, then `my` is refetched;
+  every key must therefore exist on the backend's `AppSettingsInput`.
 - Then each `registerSave` callback runs in tab order. A thrown error shows
-  next to Save and keeps the modal open.
-- Fluent's Pivot unmounts inactive tabs. Patches and save callbacks survive
-  that, so keep a tab's state in what you report, not only in its component.
+  next to Save and keeps the dialog open.
+- `onChange`/`registerSave` are stable per tab: list them as effect deps.
+- Tab controls may unmount inactive tabs (Fluent's Pivot does). Patches and
+  save callbacks survive that, so keep a tab's state in what you report.
 - Server mode: `settings` includes Apollo's `__typename`, also on nested
   objects. Strip it from anything you send back; input types reject it.
 - Don't share one `onChange` handler between two per-form `Form`s with
   different fields (a field missing from one reads as cleared).
 
-## 6. Photo (image picker + cropper)
+## 6. Status dots
+
+A nav item can show a status dot (tones `ok`, `warning`, `error`, `busy`,
+`off`, with an accessible `label`). Two sources:
 
 ```tsx
-import Photo from './lib/denim/components/Photo';
-
-<Photo
-  id={project.id}                    // download file name
-  image={project.coverPhoto ?? ''}   // base64 PNG/JPEG, WITHOUT the data: prefix
-  icon="image"                       // or "user": placeholder icon when empty
-  submit={(base64: string) =>        // the saved image (PNG base64), '' on remove
-    updateProject({ variables: { id: project.id, update: { coverPhoto: base64 || null } } })}
-/>
-```
-
-- Drop or pick a JPEG/PNG up to 500 kB; EXIF orientation is corrected; Crop,
-  then Save, calls `submit`. Existing images get crop/download/delete buttons.
-- It needs `react-image-crop`, `react-dropzone` and `exif-js`, and imports
-  `react-image-crop/dist/ReactCrop.css` itself.
-- It never talks to the server. Store the base64 in a typiql field (a
-  `String`), or in a `Location::At` per-record file type for large images.
-- For an image field inside a form, use per-form's `image-upload` type
-  instead (see `form-schema`).
-
-## 7. Quick entry in data-entry apps
-
-When users enter many records in a row (tasks, time entries, readings),
-don't send each one through ReactiveAdmin's full-page `/new` route and back:
-testing found that bouncing through create/show pages per entry is slow. Offer
-an add **over the current page** instead, and keep the list visible:
-
-- A pop-up (Fluent `Panel` or `Modal`) or an inline row above the list,
-  opened by one button or a shortcut.
-- Focus the first field on open.
-- Pre-fill sensible defaults: today's date, the project currently filtered
-  to, the last-used category (per-form `defaultValue`, or `initialValues`).
-- Save on Enter, then clear and refocus for the next entry; Escape closes.
-  The list updates through the type's `xChanged` subscription.
-
-```tsx
-function QuickAddTask({ projectId }: { projectId: string }) {
-  const formRef = useRef<IFormRef>(null);
-  const boxRef = useRef<HTMLDivElement>(null);
-  const [key, setKey] = useState(0);                       // remount = clear
-  const [addTask] = useMutation(ADD_TASK);
-  useEffect(() => {
-    boxRef.current?.querySelector<HTMLElement>('input, textarea')?.focus();
-  }, [key]);
-  const save = async () => {
-    if (!formRef.current?.isValid) return;
-    await addTask({ variables: { values: { ...formRef.current.submit(), projectId } } });
-    setKey(k => k + 1);
-  };
-  return (
-    <div ref={boxRef} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); } }}>
-      <Form key={key} ref={formRef} name="quickTask"
-            form={{ title: { type: 'text', label: 'Title', required: true },
-                    due: { type: 'date', label: 'Due', defaultNull: null } }}
-            initialValues={{ due: new Date().toISOString().slice(0, 10) }} />
-    </div>
-  );
+// (a) A hook for every app, on the provider/shell: called once per app in
+// the nav, so it may use Apollo. Pass a module-level function.
+export function useRigStatus(app: IApplication): IAppStatus | undefined {
+  const isDevices = app.path === 'devices';
+  const { data } = useQuery<any>(GET_DEVICES, { skip: !isDevices });
+  if (!isDevices || !data) return undefined;
+  return data.getDevices.some((d: any) => !d.enabled)
+    ? { tone: 'warning', label: 'A device is disabled' } : 'ok';
 }
+<SidebarShell useAppStatus={useRigStatus} ... />
+
+// (b) The app reports its own, from its component. The last report stays
+// after it unmounts; report undefined to clear.
+useReportAppStatus(app.path, dirty ? { tone: 'warning', label: 'Unsaved layout' } : undefined);
 ```
 
-(`IFormRef` and `Form` come from `typical-admin-fabric/lib/templates/Form`.)
-Keep ReactiveAdmin's own show/edit routes for the occasional full edit.
+A reported status wins over the hook's.
+
+## 7. Writing or changing a skin
+
+A skin is a shell component taking `DenimShellProps` (+ its own props) that
+renders `<DenimProvider>` and, inside it:
+
+1. a splash while `useDenim().status !== 'ready'` (`'waiting'` = the backend
+   is down and the core is polling it); `RootComponent` stands in for it;
+2. the theme for `settings.theme` / `settings.fontSize` in its UI kit (the
+   key vocabulary is in `themes/`: `parseThemeKey`, `COLOR_KEYS`, ...);
+3. chrome from `useApplications()` / `useNav()`, hidden when
+   `!useNav().showChrome`;
+4. `<DenimRoutes wrap={(content, { app, kiosk }) => ...} />` for content;
+5. a Settings dialog from `useSettingsForm(isOpen)`: render
+   `general.schema` with your form component and each `tabs[i].Component`
+   with `tabs[i].props`; call `save()`.
+
+`splitShellProps(props)` separates the provider's props from the skin's.
+The README has a complete plain-HTML skin (about 60 lines) that type-checks
+and runs. To vary a Fluent shell, copy `TopBarShell/` or `SidebarShell/` in
+denim-fabric rather than forking the core.
 
 ## 8. Plain http on the LAN is not a secure context
 
-Opening the app as `http://192.168.x.x:5173` (a phone, another PC) is not a
+Opening the app as `http://192.168.x.x:5173` (a phone, a rig touchscreen,
+another PC) is not a
 [secure context](https://developer.mozilla.org/docs/Web/Security/Secure_Contexts);
 only `https://` and `http://localhost` are. There, `crypto.randomUUID`,
 `crypto.subtle`, `navigator.clipboard`, service workers and some device APIs
 are `undefined`, and code that calls them throws only on other devices.
 
 - Let typiql generate record keys (it does; never generate keys client-side).
-- For a client-side id (a device id, a temporary row key), fall back to
-  `crypto.getRandomValues`, which works without a secure context:
+- For a client-side id, fall back to `crypto.getRandomValues`, which works
+  without a secure context:
 
   ```ts
   export function uuid(): string {
@@ -289,33 +269,25 @@ are `undefined`, and code that calls them throws only on other devices.
 - Point the GraphQL URL at `window.location.hostname` (or a same-origin
   proxy), never `localhost`, so other devices reach the backend.
 
-## 9. When to hand-roll instead
+## 9. What is not the core's job
 
-- **A CRUD screen**: never hand-roll; ReactiveAdmin (override one slot if you
-  must).
-- **A one-off visual component** (card, status strip, dashboard tile): build
-  it from Fluent primitives and theme tokens per `hand-rolled-components`, and
-  mount it inside an application's component.
-- **A page with no app chrome** (a landing page, a kiosk display): use
-  `RootComponent` or the `/kiosk/<path>` route, not a second router outside
-  Denim.
-- **A different header, nav or Settings layout**: Denim is consumed as
-  source, so change it in the denim repo for every app, rather than forking a
-  copy into one app. Prefer the props and extension points above first.
-- **Not part of Denim's job**: auth, data fetching for your pages, and
-  per-feature config. Denim's `lib/index.ts` re-exports some Fluent,
-  react-router and typical-admin-fabric pieces for convenience; import from
-  the original packages when in doubt.
+- **A CRUD screen**: ReactiveAdmin (typical-admin-fabric's `reactive-admin`
+  skill); in SidebarShell wrap it in `AdminMasterDetail`.
+- **Look and layout**: the skin. Prefer the skin's props first, then a copy
+  of the skin, never markup in the core.
+- **Auth, your pages' data fetching, per-feature config**: your app.
 
 ## Exports at a glance
 
-`import Denim, { ... } from './lib/denim'`: `Denim`, `DenimProps`, `THEMES`,
-`buildTheme`, `themeKey`, `parseThemeKey`, `COLOR_KEYS`, `MODE_KEYS`,
-`IApplication`, `ILink`, `IDenimSettings`, `DEFAULT_SETTINGS`,
-`ISettingsTab`, `ISettingsTabProps`, `buildMyQuery`, `UPDATE_SETTINGS`,
-`useHealthPoll`, `HeaderLink`, `getStyle`, `getCurrentApp`, `Logo`.
-Components by path: `components/Photo`, `components/ConfirmDialog` (an older
-copy of typical-admin-fabric's; mount and call one of them consistently, as
-each has its own `confirmAsync` singleton), `components/Splashscreen`.
-`components/Admin` (an application-config admin) is commented-out legacy
-code and does nothing.
+`import { ... } from './lib/denim'`: `DenimProvider`, `DenimContext`,
+`DenimRoutes`, `AppElement`, `AppDefaultRedirect`, `useDenim`,
+`useApplications`, `useNav`, `useSettings`, `useSettingsForm`,
+`useAppStatus`, `useReportAppStatus`, `splitShellProps`, `computeNav`,
+`groupApplications`, `isLinkActive`, `appUrl`, `linkUrl`,
+`generalSettingsSchema`, theme-key helpers (`themeKey`, `parseThemeKey`,
+`COLOR_KEYS`, `MODE_KEYS`, labels), `buildMyQuery`, `UPDATE_SETTINGS`,
+`OPTIONAL_APPLICATION_FIELDS`, `useHealthPoll`, `pingServer`,
+`applyPageReset`, `DEFAULT_SETTINGS`, `readLocalSettings`,
+`writeLocalSettings`; types `DenimProviderProps`, `DenimShellProps`,
+`IApplication`, `ILink`, `IDenimSettings`, `ISettingsTab`,
+`ISettingsTabProps`, `IAppStatus`, `AppStatusTone`, `INavState`.
