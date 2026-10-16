@@ -6,7 +6,7 @@ import React from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { IApplication, IMy, UPDATE_SETTINGS, buildMyQuery } from './lib/queries';
 import { useHealthPoll } from './lib/health';
-import { IDenimSettings, readLocalSettings, writeLocalSettings } from './lib/localSettings';
+import { IDenimSettings, readLocalSettings, splitDeviceSettings, writeLocalSettings } from './lib/localSettings';
 import { ISettingsTab } from './lib/settingsExtensions';
 import { applyPageReset } from './lib/pageReset';
 
@@ -148,10 +148,16 @@ export const DenimProvider: React.FC<DenimProviderProps> = ({
     readLocalSettings(defaultSettings),
   );
   const serverValues = data?.my?.settings;
+  // Device settings (DEVICE_SETTINGS, e.g. reduceMotion) come from this
+  // browser even in server mode.
   const settings: IDenimSettings = React.useMemo(
     () =>
       serverSettings && serverValues
-        ? { ...readLocalSettings(defaultSettings), ...withoutNulls(serverValues) }
+        ? {
+            ...readLocalSettings(defaultSettings),
+            ...withoutNulls(serverValues),
+            ...splitDeviceSettings(localSettings)[0],
+          }
         : localSettings,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [serverSettings, serverValues, localSettings],
@@ -159,7 +165,7 @@ export const DenimProvider: React.FC<DenimProviderProps> = ({
   React.useEffect(() => {
     if (serverSettings && serverValues) {
       const { launchPage, theme, fontSize } = settings;
-      writeLocalSettings({ launchPage, theme, fontSize });
+      writeLocalSettings({ ...splitDeviceSettings(localSettings)[0], launchPage, theme, fontSize });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverSettings, serverValues]);
@@ -173,7 +179,15 @@ export const DenimProvider: React.FC<DenimProviderProps> = ({
   const saveSettings = React.useCallback(
     async (values: Record<string, any>) => {
       if (serverSettings) {
-        await updateSettings({ variables: { settings: values } });
+        // Device settings stay in this browser; the rest goes to the server.
+        const [device, rest] = splitDeviceSettings(values);
+        if (Object.keys(device).length) {
+          // Into the stored copy, which also caches the server's last-seen
+          // theme for the first paint (the state here may predate it).
+          writeLocalSettings({ ...readLocalSettings(defaultSettings), ...device });
+          setLocalSettings(prev => ({ ...prev, ...device }));
+        }
+        if (Object.keys(rest).length) await updateSettings({ variables: { settings: rest } });
       } else {
         setLocalSettings(prev => {
           const next = { ...prev, ...values };
@@ -182,6 +196,7 @@ export const DenimProvider: React.FC<DenimProviderProps> = ({
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [serverSettings, updateSettings],
   );
 

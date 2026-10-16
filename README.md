@@ -141,7 +141,7 @@ Every shell takes all of `<DenimProvider>`'s props (below) plus its own.
 | `applications` | from `my.applications` | static app list; when set, `my.applications` is not queried |
 | `applicationFields` | `""` | extra `Application` fields to select, e.g. `"group icon"` (SidebarShell defaults to that) |
 | `settingsSource` | `"local"` | `"local"`: localStorage. `"server"`: `my.settings` + `updateSettings` |
-| `defaultSettings` | `{ theme: 'default', fontSize: 1, launchPage: '' }` | values before anything is saved |
+| `defaultSettings` | `{ theme: 'default', fontSize: 1, launchPage: '', reduceMotion: false }` | values before anything is saved (e.g. `{ reduceMotion: true }` for an app that should default to no motion) |
 | `settingsFields` | `""` | extra `AppSettings` fields to select (server mode), for your settings tabs |
 | `settingsTabs` | `[]` | extra Settings tabs, `{ key, headerText, Component }` |
 | `settingsGeneralFields` | none | extra per-form fields on the General tab |
@@ -155,7 +155,7 @@ Every shell takes all of `<DenimProvider>`'s props (below) plus its own.
 import {
   DenimProvider, DenimRoutes,                  // provider, routes
   useDenim, useApplications, useNav, useSettings,
-  useSettingsForm, useAppStatus, useReportAppStatus,
+  useSettingsForm, useAppStatus, useReportAppStatus, useReducedMotion,
 } from './lib/denim';
 ```
 
@@ -168,6 +168,7 @@ import {
 | `useSettingsForm(isOpen)` | a Settings dialog's logic: `{ general: { schema, initialValues, onChange }, tabs: [{ key, headerText, Component, props }], save(), saving, error }` |
 | `useAppStatus(app)` | the app's status dot: reported by the app, else from the `useAppStatus` prop |
 | `useReportAppStatus(appPath, status)` | an app publishes its own dot, e.g. `'ok'`, `{ tone: 'warning', label: 'Unsaved layout' }`; `undefined` clears it |
+| `useReducedMotion()` | true when a skin should not animate: the `reduceMotion` device setting or the OS's `prefers-reduced-motion`; follows changes to either |
 | `<DenimRoutes wrap home welcome />` | the routes; `wrap(content, { app, kiosk })` puts each route in the skin's layout |
 | `computeNav`, `groupApplications`, `isLinkActive` | the nav model as pure functions |
 

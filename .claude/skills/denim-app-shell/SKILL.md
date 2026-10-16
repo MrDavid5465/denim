@@ -127,7 +127,8 @@ same functions are exported pure (`computeNav`, `isLinkActive`,
 ## 4. Settings: where they live
 
 Denim's own settings are `theme` (`"<mode>-<color>"`, e.g. `dark-teal`),
-`fontSize` (1, 1.14, 1.29) and `launchPage`. `settingsSource` decides where:
+`fontSize` (1, 1.14, 1.29), `launchPage` and `reduceMotion` (a device
+setting, below). `settingsSource` decides where:
 
 | | `"local"` (default) | `"server"` |
 |---|---|---|
@@ -138,6 +139,15 @@ Denim's own settings are `theme` (`"<mode>-<color>"`, e.g. `dark-teal`),
 `defaultSettings={{ theme: 'light-blue', launchPage: 'projects' }}` sets the
 values before anything is saved. `useSettings().saveSettings(values)` merges
 and persists from anywhere.
+
+**Device settings** (`DEVICE_SETTINGS`, today only `reduceMotion`) live in
+this browser's `localStorage` in both modes and are never sent to
+`updateSettings`, so a server backend needs no field for them: they describe
+the device (a desktop webview without GPU compositing wants reduced motion,
+a phone may not). `reduceMotion` is on the General tab as "Reduce motion
+(this device)"; skins read it, together with the OS preference, through
+`useReducedMotion()`. Default it per app with
+`defaultSettings={{ reduceMotion: true }}`.
 
 The Settings dialog is for **global, cross-cutting preferences** (theme,
 units, this device's name). A feature's own configuration, however small,

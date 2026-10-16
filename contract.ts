@@ -16,7 +16,9 @@
 //   5. a Settings dialog driven by useSettingsForm(), rendering each
 //      extension tab's `Component` with its `props`.
 //
-// Everything else (look, layout, breakpoints, icons) is the skin's choice.
+// Everything else (look, layout, breakpoints, icons, motion) is the skin's
+// choice; a skin that animates turns its motion off while
+// useReducedMotion() is true.
 import type { DenimProviderProps } from './DenimProvider';
 
 /** Props every shell accepts: the provider's, minus children. */

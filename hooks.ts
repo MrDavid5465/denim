@@ -99,3 +99,24 @@ export function useReportAppStatus(
     report(appPath, tone ? { tone, label } : undefined);
   }, [appPath, tone, label, report]);
 }
+
+const REDUCE_QUERY = '(prefers-reduced-motion: reduce)';
+const subscribeReduce = (onChange: () => void) => {
+  if (typeof window === 'undefined' || !window.matchMedia) return () => {};
+  const mq = window.matchMedia(REDUCE_QUERY);
+  mq.addEventListener?.('change', onChange);
+  return () => mq.removeEventListener?.('change', onChange);
+};
+const osPrefersReduced = () =>
+  typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(REDUCE_QUERY).matches;
+
+/**
+ * True when the skin should not animate: the `reduceMotion` setting (per
+ * device, see DEVICE_SETTINGS) or the OS's "reduce motion" preference.
+ * Follows changes to either. Works outside a <DenimProvider> too (OS only).
+ */
+export function useReducedMotion(): boolean {
+  const ctx = React.useContext(DenimContext);
+  const os = React.useSyncExternalStore(subscribeReduce, osPrefersReduced, () => false);
+  return os || !!ctx?.settings.reduceMotion;
+}

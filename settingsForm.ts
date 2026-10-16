@@ -40,6 +40,14 @@ export const generalSettingsSchema = () => ({
     defaultValue: 1,
     converter: (_key: string, values: Record<string, any>) => parseFloat(values['fontSize']) || 1.0,
   },
+  // Per device (DEVICE_SETTINGS): kept in this browser even when the other
+  // settings live on the server.
+  reduceMotion: {
+    type: 'checkbox',
+    label: 'Reduce motion (this device)',
+    required: false,
+    converter: (_key: string, values: Record<string, any>) => !!values['reduceMotion'],
+  },
 });
 
 /** The General form's starting values: the settings, with `theme` split in two. */

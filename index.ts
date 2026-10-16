@@ -22,6 +22,7 @@ export {
   useSettings,
   useAppStatus,
   useReportAppStatus,
+  useReducedMotion,
 } from './hooks';
 
 // Routing
@@ -36,7 +37,13 @@ export type { INavState, IApplicationGroup } from './nav';
 export { useSettingsForm, generalSettingsSchema, generalSettingsValues } from './settingsForm';
 export type { ISettingsForm, ISettingsFormTab } from './settingsForm';
 export type { IDenimSettings, ILocalSettings } from './lib/localSettings';
-export { DEFAULT_SETTINGS, readLocalSettings, writeLocalSettings } from './lib/localSettings';
+export {
+  DEFAULT_SETTINGS,
+  DEVICE_SETTINGS,
+  readLocalSettings,
+  splitDeviceSettings,
+  writeLocalSettings,
+} from './lib/localSettings';
 export type { ISettingsTab, ISettingsTabProps, ISettingsExtensions } from './lib/settingsExtensions';
 
 // Theme-key vocabulary (the colours themselves belong to a skin)
