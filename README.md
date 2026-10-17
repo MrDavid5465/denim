@@ -81,19 +81,19 @@ your-app/src/lib/per-form/
 
 Get them from:
 
-- file:///var/mnt/Media/david-source/repos/typiql-standins/denim
-- file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin
-- file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin-fabric
-- file:///var/mnt/Media/david-source/repos/typiql-standins/per-form
+- https://github.com/MrDavid5465/denim
+- https://github.com/MrDavid5465/typical-admin
+- https://github.com/MrDavid5465/typical-admin-fabric
+- https://github.com/MrDavid5465/per-form
 - https://github.com/MrDavid5465/denim-fabric
 - https://github.com/MrDavid5465/denim-fabric-sidebar (or https://github.com/MrDavid5465/denim-fabric-topbar)
 
 ```sh
 cd your-app/src/lib
-git clone file:///var/mnt/Media/david-source/repos/typiql-standins/denim
-git clone file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin
-git clone file:///var/mnt/Media/david-source/repos/typiql-standins/typical-admin-fabric
-git clone file:///var/mnt/Media/david-source/repos/typiql-standins/per-form
+git clone https://github.com/MrDavid5465/denim
+git clone https://github.com/MrDavid5465/typical-admin
+git clone https://github.com/MrDavid5465/typical-admin-fabric
+git clone https://github.com/MrDavid5465/per-form
 git clone https://github.com/MrDavid5465/denim-fabric
 git clone https://github.com/MrDavid5465/denim-fabric-sidebar   # or denim-fabric-topbar
 ```
